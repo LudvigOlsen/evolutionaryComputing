@@ -9,7 +9,9 @@ public class player56 implements ContestSubmission
 	Random rnd_;
 	ContestEvaluation evaluation_;
     private int evaluations_limit_;
-	
+
+    private int populationSize = 0;
+
 	public player56()
 	{
 		rnd_ = new Random();
@@ -58,7 +60,7 @@ public class player56 implements ContestSubmission
             // Apply crossover / mutation operators
             //double child[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
 			double child[] = {0.0,1.0,3.0,6.0,0.4,0.2,2.0,0.0,0.0,0.0};
-            // Check fitness of unknown fuction
+            // Check fitness of unknown function
             Double fitness = (double) evaluation_.evaluate(child);
             //System.out.println("Fitness " + fitness);
             evals++;
