@@ -13,6 +13,7 @@ public class player56 implements ContestSubmission
 	public player56()
 	{
 		rnd_ = new Random();
+		System.out.println("Testing");
 	}
 
 	public void setSeed(long seed)
@@ -30,6 +31,7 @@ public class player56 implements ContestSubmission
 		Properties props = evaluation.getProperties();
         // Get evaluation limit
         evaluations_limit_ = Integer.parseInt(props.getProperty("Evaluations"));
+        System.out.println(evaluations_limit_);
 		// Property keys depend on specific evaluation
 		// E.g. double param = Double.parseDouble(props.getProperty("property_name"));
         boolean isMultimodal = Boolean.parseBoolean(props.getProperty("Multimodal"));
@@ -54,9 +56,11 @@ public class player56 implements ContestSubmission
         while(evals<evaluations_limit_){
             // Select parents
             // Apply crossover / mutation operators
-            double child[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+            //double child[] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+			double child[] = {0.0,1.0,3.0,6.0,0.4,0.2,2.0,0.0,0.0,0.0};
             // Check fitness of unknown fuction
             Double fitness = (double) evaluation_.evaluate(child);
+            //System.out.println("Fitness " + fitness);
             evals++;
             // Select survivors
         }
