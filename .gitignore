@@ -162,3 +162,7 @@ pom.xml.tag
 
 #ignore .metadata folder and the tmp folder
 .metadata
+
+#ignore .info files
+.info
+tmp/
