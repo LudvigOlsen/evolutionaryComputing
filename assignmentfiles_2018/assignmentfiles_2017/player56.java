@@ -18,7 +18,7 @@ public class player56 implements ContestSubmission
 
 	public void setSeed(long seed)
 	{
-		// Set seed of algortihms random process
+		// Set seed of algorithms random process
 		rnd_.setSeed(seed);
 	}
 
