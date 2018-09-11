@@ -7,7 +7,7 @@ import java.util.Collections;
 public class BestKSurvivalSelector implements SurvivalSelector {
 
     @Override
-    public Population selectSurvivors(Population population, int noSurvivors, int maxAge) {
+    public Population selectSurvivors(Population population, int numSurvivors, int maxAge) {
 
         Population survivors = new Population();
 
@@ -15,7 +15,7 @@ public class BestKSurvivalSelector implements SurvivalSelector {
         population.getPopulation().sort(Collections.reverseOrder());
 
         // Copy survivors to new population
-        for (int s = 0; s < noSurvivors; s++) {
+        for (int s = 0; s < numSurvivors; s++) {
             survivors.addIndividual(population.getIndividual(s));
         }
 

@@ -14,11 +14,11 @@ import java.util.TreeMap;
 public class WeightedSampler<Individual> {
 
     private final NavigableMap<Double, Individual> weightToIndividualMap = new TreeMap<Double, Individual>();
-    private final Random random;
+    private final Random rand;
     private double totalWeight = 0;
 
-    public WeightedSampler() {
-        this.random = new Random();
+    public WeightedSampler(Random rand) {
+        this.rand = rand;
     }
 
     public void add(double weight, Individual individual) {
@@ -34,7 +34,7 @@ public class WeightedSampler<Individual> {
      * @return Individual
      */
     public Individual next() {
-        double value = random.nextDouble() * totalWeight;
+        double value = rand.nextDouble() * totalWeight;
         return weightToIndividualMap.higherEntry(value).getValue();
     }
 

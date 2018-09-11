@@ -22,7 +22,7 @@ public class PerGenotypeRecombinator implements Recombinator {
         double[] childGenome = new double[genomeSize];
 
         for (int gt = 0; gt < genomeSize; gt++) {
-            int fromIndividual = (int) Math.round(Math.random() * numIndividuals);
+            int fromIndividual = (int) Math.round(Math.random() * numIndividuals); // TODO should use Random() instead
             childGenome[gt] = parents.getIndividual(fromIndividual).getGenome()[gt];
         }
 

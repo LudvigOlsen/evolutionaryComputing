@@ -4,12 +4,20 @@ import charles.Individual;
 import charles.Population;
 import charles.utils.WeightedSampler;
 
+import java.util.Random;
+
 public class ProportionalParentSelector implements ParentSelector {
 
-    @Override
-    public Population selectParents(Population population, int noParents) {
+    private Random rand;
 
-        WeightedSampler<Individual> sampler = new WeightedSampler<>();
+    public ProportionalParentSelector(Random rand) {
+        this.rand = rand;
+    }
+
+    @Override
+    public Population selectParents(Population population, int numParents) {
+
+        WeightedSampler<Individual> sampler = new WeightedSampler<>(this.rand);
         Population parents = new Population();
         double totalFitnessScore = population.getTotalFitnessScore();
 
@@ -18,7 +26,7 @@ public class ProportionalParentSelector implements ParentSelector {
             sampler.add(individual.getFitnessScore() / totalFitnessScore, individual);
         }
 
-        for (int p = 0; p < noParents; p++) {
+        for (int p = 0; p < numParents; p++) {
             parents.addIndividual(sampler.next());
         }
 

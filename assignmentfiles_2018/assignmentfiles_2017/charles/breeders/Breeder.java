@@ -20,7 +20,7 @@ public interface Breeder {
      *
      * @return Population
      */
-    public Population breedChildren();
+    public Population breedChildren(Population population, int numParents, int numChildren);
 
 
 }

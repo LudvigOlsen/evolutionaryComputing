@@ -5,7 +5,7 @@ import charles.Population;
 public class BestKYoungSurvivalSelector implements SurvivalSelector {
 
     @Override
-    public Population selectSurvivors(Population population, int noSurvivors, int maxAge) {
+    public Population selectSurvivors(Population population, int numSurvivors, int maxAge) {
 
         BestKSurvivalSelector bestKSelector = new BestKSurvivalSelector();
 
@@ -16,7 +16,7 @@ public class BestKYoungSurvivalSelector implements SurvivalSelector {
             }
         }
 
-        return bestKSelector.selectSurvivors(population, noSurvivors, maxAge);
+        return bestKSelector.selectSurvivors(population, numSurvivors, maxAge);
 
 
     }

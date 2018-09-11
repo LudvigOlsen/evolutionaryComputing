@@ -6,5 +6,5 @@ import charles.Population;
 import java.util.ArrayList;
 
 public interface SurvivalSelector {
-    public Population selectSurvivors(Population population, int noSurvivors, int maxAge);
+    public Population selectSurvivors(Population population, int numSurvivors, int maxAge);
 }
