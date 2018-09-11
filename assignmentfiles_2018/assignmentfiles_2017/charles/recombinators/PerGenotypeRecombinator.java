@@ -1,8 +1,7 @@
 package charles.recombinators;
 
 import charles.Individual;
-
-import java.util.ArrayList;
+import charles.Population;
 
 public class PerGenotypeRecombinator implements Recombinator {
 
@@ -14,9 +13,9 @@ public class PerGenotypeRecombinator implements Recombinator {
 
      */
     @Override
-    public Individual combine(ArrayList<Individual> parents, double minLimit, double maxLimit) {
-        int genomeSize = parents.get(0).getGenomeSize();
-        int numIndividuals = parents.size();
+    public Individual combine(Population parents, double minLimit, double maxLimit) {
+        int genomeSize = parents.getIndividual(0).getGenomeSize();
+        int numIndividuals = parents.getPopulationSize();
 
         assert genomeSize >= numIndividuals; // Correct way to assert?
 
@@ -24,7 +23,7 @@ public class PerGenotypeRecombinator implements Recombinator {
 
         for (int gt = 0; gt < genomeSize; gt++) {
             int fromIndividual = (int) Math.round(Math.random() * numIndividuals);
-            childGenome[gt] = parents.get(fromIndividual).getGenome()[gt];
+            childGenome[gt] = parents.getIndividual(fromIndividual).getGenome()[gt];
         }
 
         return new Individual(childGenome, minLimit, maxLimit);

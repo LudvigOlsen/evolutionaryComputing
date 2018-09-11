@@ -1,9 +1,10 @@
 package charles.recombinators;
 
 import charles.Individual;
+import charles.Population;
 
 import java.util.ArrayList;
 
 public interface Recombinator {
-    public Individual combine(ArrayList<Individual> parents, double minLimit, double maxLimit);
+    public Individual combine(Population parents, double minLimit, double maxLimit);
 }

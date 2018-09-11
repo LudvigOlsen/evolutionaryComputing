@@ -1,9 +1,10 @@
 package charles.survivalSelectors;
 
 import charles.Individual;
+import charles.Population;
 
 import java.util.ArrayList;
 
 public interface SurvivalSelector {
-    public ArrayList<Individual> selectSurvivors(ArrayList<Individual> potentialSurvivors, int noSurvivors);
+    public Population selectSurvivors(Population population, int noSurvivors, int maxAge);
 }
