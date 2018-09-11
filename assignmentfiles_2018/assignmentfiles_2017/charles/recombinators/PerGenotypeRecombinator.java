@@ -1,4 +1,6 @@
-package charles;
+package charles.recombinators;
+
+import charles.Individual;
 
 import java.util.ArrayList;
 
