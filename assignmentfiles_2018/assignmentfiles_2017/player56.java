@@ -9,6 +9,7 @@ import charles.parentSelectors.ParentSelector;
 import charles.parentSelectors.ProportionalParentSelector;
 import charles.recombinators.PerGenotypeRecombinator;
 import charles.recombinators.Recombinator;
+import charles.survivalSelectors.BestKSurvivalSelector;
 import charles.survivalSelectors.BestKYoungSurvivalSelector;
 import charles.survivalSelectors.SurvivalSelector;
 import org.vu.contest.ContestSubmission;
@@ -76,12 +77,14 @@ public class player56 implements ContestSubmission {
         Mutator mutator = new NoiseMutator(rnd_, -0.1, 0.1);
         Initializer initializer = new Initializer();
         Breeder breeder = new SimpleBreeder(parentSelector, recombinator, mutator, minLimit, maxLimit);
-        SurvivalSelector survivalSelector = new BestKYoungSurvivalSelector();
+        SurvivalSelector survivalSelector = new BestKSurvivalSelector();
 
         int evals = 0;
         // init population
 
         Population fullPopulation = initializer.initialize(populationSize, genomeSize, minLimit, maxLimit, rnd_);
+        fullPopulation.getIndividual(0).printGenome();
+
 
         // calculate fitness
         evaluator.evaluate(fullPopulation);

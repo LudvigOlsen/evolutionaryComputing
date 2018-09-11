@@ -1,41 +1,75 @@
 package charles.utils;
 
-import java.util.NavigableMap;
+import charles.Individual;
+
+import java.util.HashMap;
 import java.util.Random;
-import java.util.TreeMap;
 
 
-/**
- * Sampler for creating a custom probability distribution
- * to select individuals from.
- * <p>
- * Based on https://stackoverflow.com/questions/6409652/random-weighted-selection-in-java/30362366
- */
-public class WeightedSampler<Individual> {
+public class WeightedSampler {
 
-    private final NavigableMap<Double, Individual> weightToIndividualMap = new TreeMap<Double, Individual>();
-    private final Random rand;
-    private double totalWeight = 0;
+    private HashMap<Integer, Double> weights; // id => weight
+    private HashMap<Integer, Individual> individuals; // id => individual
+    private double totalWeight = 0.0;
+    private Random rand;
+
 
     public WeightedSampler(Random rand) {
+        weights = new HashMap<>();
+        individuals = new HashMap<>();
         this.rand = rand;
     }
 
-    public void add(double weight, Individual individual) {
-        if (weight > 0) {
-            totalWeight += weight;
-            weightToIndividualMap.put(totalWeight, individual);
+    public void add(Individual individual, double weight) {
+        if (weight >= 0) {
+            weights.put(individual.getId(), weight);
+            individuals.put(individual.getId(), individual);
+        } else {
+            System.out.println(weight);
+            throw new IllegalArgumentException("weight cannot be below 0.0.");
         }
     }
 
-    /**
-     * Pick next individual
-     *
-     * @return Individual
-     */
-    public Individual next() {
-        double value = rand.nextDouble() * totalWeight;
-        return weightToIndividualMap.higherEntry(value).getValue();
+    public void clearSampler() {
+        weights.clear();
+        individuals.clear();
+        totalWeight = 0.0;
     }
 
+    public int getSamplerSize() {
+        return weights.size();
+    }
+
+    public Boolean contains(Individual individual) {
+        return weights.containsKey(individual.getId());
+    }
+
+    private double getWeight(int id) {
+        return weights.get(id);
+    }
+
+    public Individual next() {
+
+        totalWeight = 0.0;
+
+        for (int id : weights.keySet()) {
+            totalWeight += getWeight(id);
+        }
+
+        double randomNumber = rand.nextDouble() * totalWeight;
+        double cumWeight = 0.0;
+        int pickedId;
+        Individual pickedIndividual;
+        for (int id : weights.keySet()) {
+            cumWeight += getWeight(id);
+            if (cumWeight >= randomNumber) {
+                pickedId = id;
+                pickedIndividual = individuals.get(pickedId);
+                weights.remove(pickedId);
+                individuals.remove(pickedId);
+                return pickedIndividual;
+            }
+        }
+        throw new RuntimeException("Should never be shown.");
+    }
 }

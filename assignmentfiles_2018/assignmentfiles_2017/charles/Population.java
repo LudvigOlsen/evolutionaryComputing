@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Population {
 
     private ArrayList<Individual> population;
-    private double totalFitnessScore = 0;
+    private double totalFitnessScore = 0.0;
 
     public Population() {
         population = new ArrayList<>();
@@ -17,6 +17,11 @@ public class Population {
 
     public void deleteIndividual(int index) {
         population.remove(index);
+    }
+
+    public void clear() {
+        population.clear();
+        totalFitnessScore = 0.0;
     }
 
     public Individual getIndividual(int index) {

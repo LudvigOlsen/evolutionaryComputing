@@ -2,18 +2,26 @@ package charles;
 
 public class Individual implements Comparable<Individual> {
 
+    // Counts instances of individuals created
+    // Used for creating unique IDs
+    private static int individualsCreatedCounter;
+
     private double genome[];
     private double minLimit;
     private double maxLimit;
     private double fitnessScore = 0.0;
     private Boolean wasEvaluatedFlag = false;
     private int age;
+    private int id;
 
     public Individual(double[] genome, double minLimit, double maxLimit) {
         this.genome = genome;
         this.minLimit = minLimit;
         this.maxLimit = maxLimit;
         this.age = 0;
+
+        individualsCreatedCounter++;
+        this.id = individualsCreatedCounter;
     }
 
     public double[] getGenome() {
@@ -48,6 +56,16 @@ public class Individual implements Comparable<Individual> {
         return this.genome.length;
     }
 
+    public void printGenome() {
+        for (int g = 0; g < getGenome().length; g++) {
+            System.out.print(g);
+            System.out.print(": ");
+            System.out.print(getGenome()[g]);
+            System.out.print("  ,  ");
+        }
+        System.out.println();
+    }
+
     public void setFitnessScore(double score) {
         fitnessScore = score;
         wasEvaluatedFlag = true;
@@ -62,8 +80,12 @@ public class Individual implements Comparable<Individual> {
         return age;
     }
 
-    public void incrementAge(){
+    public void incrementAge() {
         age++;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public Boolean wasEvaluated() {

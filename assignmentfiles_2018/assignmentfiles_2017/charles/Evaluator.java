@@ -26,9 +26,16 @@ public class Evaluator {
                 updateMaxScore(individual.getFitnessScore());
                 individual.incrementAge();
             } else {
-                double fitness = (double) evaluation_.evaluate(individual.getGenome());
-                individual.setFitnessScore(fitness);
-                updateMaxScore(fitness);
+                try {
+                    Double fitness = (Double) evaluation_.evaluate(individual.getGenome());
+                    individual.setFitnessScore(fitness);
+                    updateMaxScore(fitness);
+
+                } catch (NullPointerException e) { //TODO figure out, why evaluate return null
+                    double fitness = 0.0;
+                    individual.setFitnessScore(fitness);
+
+                }
 
             }
 
