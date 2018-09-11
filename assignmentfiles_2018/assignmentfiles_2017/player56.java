@@ -72,7 +72,7 @@ public class player56 implements ContestSubmission {
         // Select modules here
         evaluator = new Evaluator(evaluation_);
         ParentSelector parentSelector = new ProportionalParentSelector(rnd_);
-        Recombinator recombinator = new PerGenotypeRecombinator();
+        Recombinator recombinator = new PerGenotypeRecombinator(rnd_);
         Mutator mutator = new NoiseMutator(rnd_, -0.1, 0.1);
         Initializer initializer = new Initializer();
         Breeder breeder = new SimpleBreeder(parentSelector, recombinator, mutator, minLimit, maxLimit);

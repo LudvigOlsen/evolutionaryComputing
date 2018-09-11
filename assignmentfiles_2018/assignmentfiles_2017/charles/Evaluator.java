@@ -26,7 +26,7 @@ public class Evaluator {
                 updateMaxScore(individual.getFitnessScore());
                 individual.incrementAge();
             } else {
-                Double fitness = (double) evaluation_.evaluate(individual.getGenome());
+                double fitness = (double) evaluation_.evaluate(individual.getGenome());
                 individual.setFitnessScore(fitness);
                 updateMaxScore(fitness);
 
