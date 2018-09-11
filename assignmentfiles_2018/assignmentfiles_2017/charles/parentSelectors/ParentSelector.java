@@ -1,9 +1,10 @@
 package charles.parentSelectors;
 
 import charles.Individual;
+import charles.Population;
 
 import java.util.ArrayList;
 
 public interface ParentSelector {
-    public ArrayList<Individual> selectParents(ArrayList<Individual> potentialParents, int noParents);
+    public Population selectParents(Population population, int noParents);
 }

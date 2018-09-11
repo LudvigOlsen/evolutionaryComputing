@@ -5,20 +5,21 @@ import java.util.ArrayList;
 public class Population {
 
     private ArrayList<Individual> population;
+    private double totalFitnessScore = 0;
 
     public Population() {
         population = new ArrayList<>();
     }
 
-    public void addChild(Individual C) {
+    public void addIndividual(Individual C) {
         population.add(C);
     }
 
-    public void deleteChild(int index) {
+    public void deleteIndividual(int index) {
         population.remove(index);
     }
 
-    public Individual getChild(int index) {
+    public Individual getIndividual(int index) {
         return population.get(index);
     }
 
@@ -40,6 +41,25 @@ public class Population {
      */
     public void merge(Population population) {
         this.population.addAll(population.getPopulation());
+    }
+
+
+    private void calculateTotalFitnessScore() {
+        double totalFitnessScore = 0.0;
+        for (Individual individual : population) {
+            totalFitnessScore += individual.getFitnessScore();
+        }
+
+        this.totalFitnessScore = totalFitnessScore;
+
+    }
+
+    /**
+     * Calculates and return total fitness score for population.
+     */
+    public double getTotalFitnessScore() {
+        calculateTotalFitnessScore();
+        return totalFitnessScore;
     }
 
 }
