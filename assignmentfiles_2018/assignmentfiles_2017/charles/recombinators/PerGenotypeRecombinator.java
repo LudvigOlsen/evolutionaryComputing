@@ -3,7 +3,15 @@ package charles.recombinators;
 import charles.Individual;
 import charles.Population;
 
+import java.util.Random;
+
 public class PerGenotypeRecombinator implements Recombinator {
+
+    private Random rand;
+
+    public PerGenotypeRecombinator(Random rand) {
+        this.rand = rand;
+    }
 
     /*
     This recombiner merges n parents by randomly selecting genotypes
@@ -17,12 +25,12 @@ public class PerGenotypeRecombinator implements Recombinator {
         int genomeSize = parents.getIndividual(0).getGenomeSize();
         int numIndividuals = parents.getPopulationSize();
 
-        assert genomeSize >= numIndividuals; // Correct way to assert?
+        assert genomeSize >= numIndividuals;
 
         double[] childGenome = new double[genomeSize];
 
         for (int gt = 0; gt < genomeSize; gt++) {
-            int fromIndividual = (int) Math.round(Math.random() * numIndividuals); // TODO should use Random() instead
+            int fromIndividual = (int) Math.round(rand.nextDouble() * (numIndividuals - 1)); // TODO should use Random() instead
             childGenome[gt] = parents.getIndividual(fromIndividual).getGenome()[gt];
         }
 

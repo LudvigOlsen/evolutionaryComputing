@@ -35,7 +35,6 @@ public class player56 implements ContestSubmission {
 
     public player56() {
         rnd_ = new Random();
-        System.out.println("Testing");
     }
 
     public void setSeed(long seed) {
@@ -65,14 +64,13 @@ public class player56 implements ContestSubmission {
             // Do sth else
         }
 
-        evaluator = new Evaluator(evaluation_);
-
     }
 
     public void run() {
         // Run your algorithm here
 
         // Select modules here
+        evaluator = new Evaluator(evaluation_);
         ParentSelector parentSelector = new ProportionalParentSelector(rnd_);
         Recombinator recombinator = new PerGenotypeRecombinator();
         Mutator mutator = new NoiseMutator(rnd_, -0.1, 0.1);
@@ -89,6 +87,7 @@ public class player56 implements ContestSubmission {
         evaluator.evaluate(fullPopulation);
 
         while (evals < evaluations_limit_) {
+            //System.out.println("eval" + evals);
             Population children = breeder.breedChildren(fullPopulation, numParents, numChildren);
 
             // Select which from the previous should live on
@@ -98,7 +97,6 @@ public class player56 implements ContestSubmission {
             fullPopulation = survivors; // Overwrite/redefine fullPopulation
             // Check fitness of unknown function
             evaluator.evaluate(fullPopulation);
-            System.out.println("Best Fitness " + evaluator.getMaxScore());
             evals++;
         }
 
