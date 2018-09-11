@@ -26,4 +26,20 @@ public class Population {
         return population.size();
     }
 
+    /*
+    Returns the population ArrayList<Individual>.
+     */
+    public ArrayList<Individual> getPopulation() {
+        return population;
+    }
+
+    /**
+     * Merge current population with another population
+     *
+     * @param population The population to add to the current population.
+     */
+    public void merge(Population population) {
+        this.population.addAll(population.getPopulation());
+    }
+
 }
