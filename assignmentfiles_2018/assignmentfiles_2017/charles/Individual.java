@@ -7,11 +7,13 @@ public class Individual implements Comparable<Individual> {
     private double maxLimit;
     private double fitnessScore = 0.0;
     private Boolean wasEvaluatedFlag = false;
+    private int age;
 
     public Individual(double[] genome, double minLimit, double maxLimit) {
         this.genome = genome;
         this.minLimit = minLimit;
         this.maxLimit = maxLimit;
+        this.age = 0;
     }
 
     public double[] getGenome() {
@@ -49,10 +51,19 @@ public class Individual implements Comparable<Individual> {
     public void setFitnessScore(double score) {
         fitnessScore = score;
         wasEvaluatedFlag = true;
+
     }
 
     public double getFitnessScore() {
         return fitnessScore;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void incrementAge(){
+        age++;
     }
 
     public Boolean wasEvaluated() {
