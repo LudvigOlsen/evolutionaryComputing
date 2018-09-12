@@ -17,6 +17,9 @@ Winning Genome: [-1.17, 3.99, -0.5, -3.46, 0.53, -1.77, 1.09, -0.85, 1.53, -0.48
 Population Size: 100  
 Number of Children: 90  
 Survivors from previous: 10  
+Number of Parents: 2  
+Maximum Age: 2  
+
 Seed: 2  
 
 ##### Modules  
@@ -29,6 +32,12 @@ Survival Selector: BestKYoungSurvivalSelector
 ## KatsuuraEvaluation  
 
 ## SchaffersEvaluation  
+
+Score: 8.797819952553965  
+Seed: 2  
+
+Everything else is same as BentCigarFunction Entrance #1.  
+
 
 
 # Entrance Template  
@@ -44,7 +53,10 @@ Winning Genome:
 Population Size:  
 Number of Children:  
 Survivors from previous:  
+Number of Parents:    
+Maximum Age:  
 Seed:  
+
 
 ##### Modules  
 Parent Selector:  
