@@ -38,7 +38,7 @@ public class ProportionalParentSelector implements ParentSelector {
 //            System.out.print(" - ");
 //            System.out.println(individual.getFitnessScore() / totalFitnessScore);
 
-            sampler.add(individual, (Double) individual.getFitnessScore() / totalFitnessScore);
+            sampler.add(individual, (Double) (individual.getFitnessScore() + 1E-5) / (totalFitnessScore + 1E-5));
 
         }
 

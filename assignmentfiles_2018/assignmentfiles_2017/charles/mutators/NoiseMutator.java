@@ -39,7 +39,8 @@ public class NoiseMutator implements Mutator {
             double noiseAmount = ScaleToRange.scaleToRange(
                     rand.nextDouble(), 0.0, 1.0, amountMin, amountMax);
 
-            newGenome[gt] = individual.getGenome()[gt] * noiseAmount;
+            double currentGenotype = individual.getGenome()[gt];
+            newGenome[gt] = currentGenotype + (currentGenotype * noiseAmount);
 
         }
 

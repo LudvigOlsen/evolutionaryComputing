@@ -9,13 +9,12 @@ import charles.parentSelectors.ParentSelector;
 import charles.parentSelectors.ProportionalParentSelector;
 import charles.recombinators.PerGenotypeRecombinator;
 import charles.recombinators.Recombinator;
-import charles.survivalSelectors.BestKSurvivalSelector;
+import charles.survivalSelectors.BestKYoungSurvivalSelector;
 import charles.survivalSelectors.SurvivalSelector;
 import charles.utils.Numbers;
 import org.vu.contest.ContestEvaluation;
 import org.vu.contest.ContestSubmission;
 
-import java.text.DecimalFormat;
 import java.util.Properties;
 import java.util.Random;
 
@@ -73,20 +72,19 @@ public class player56 implements ContestSubmission {
         // Run your algorithm here
 
         // Select modules here
-        evaluator = new Evaluator(evaluation_);
+        evaluator = new Evaluator(evaluation_, evaluations_limit_);
         ParentSelector parentSelector = new ProportionalParentSelector(rnd_);
         Recombinator recombinator = new PerGenotypeRecombinator(rnd_);
         Mutator mutator = new NoiseMutator(rnd_, -0.05, 0.05);
         Initializer initializer = new Initializer();
         Breeder breeder = new SimpleBreeder(parentSelector, recombinator, mutator, minLimit, maxLimit);
-        SurvivalSelector survivalSelector = new BestKSurvivalSelector();
+        SurvivalSelector survivalSelector = new BestKYoungSurvivalSelector();
 
         int evals = 0;
         // init population
 
         Population fullPopulation = initializer.initialize(populationSize, genomeSize, minLimit, maxLimit, rnd_);
         fullPopulation.getIndividual(0).printGenome();
-
 
         // calculate fitness
         evaluator.evaluate(fullPopulation);
@@ -99,7 +97,7 @@ public class player56 implements ContestSubmission {
             Population survivors = survivalSelector.selectSurvivors(fullPopulation, numSurvivors, maxAge);
 
             survivors.merge(children);
-            fullPopulation = survivors; // Overwrite/redefine fullPopulation
+            fullPopulation = survivors; // Overwrite/redefine fullPopulation TODO Doesn't work??
 
             // Check fitness of unknown function
             evaluator.evaluate(fullPopulation);
@@ -114,9 +112,24 @@ public class player56 implements ContestSubmission {
                 System.out.print(Numbers.roundScienceNotationToNDecimals(fullPopulation.getAverageFitnessScore(), 3));
                 System.out.print(" - Best Genome: ");
                 evaluator.getBestIndividual().printGenome();
+                System.out.print(" - All time max score: ");
+                System.out.print(Numbers.roundScienceNotationToNDecimals(evaluator.getAlltimeMaxScore(), 3));
+                System.out.print(" - All time Best Genome: ");
+                evaluator.getAllTimeBestIndividual().printGenome();
+
+
+//                System.out.print(" - Genome 3: "); // For checking that if changes over time
+//                fullPopulation.getIndividual(3).printGenome();
+//                System.out.print(" - Age: ");
+//                System.out.print(fullPopulation.getIndividual(3).getAge());
+//                System.out.print(" - ID: ");
+//                System.out.print(fullPopulation.getIndividual(3).getId());
+//                System.out.print(" - Fitness: ");
+//                System.out.print(fullPopulation.getIndividual(3).getFitnessScore());
+//                System.out.println();
             }
 
-            evals++;
+            evals = evaluator.getTotalNumEvaluations();
         }
 
     }

@@ -19,6 +19,11 @@ public class BestKSurvivalSelector implements SurvivalSelector {
             survivors.addIndividual(population.getIndividual(s));
         }
 
+        // Check survivors' fitnessScore
+//        for (int s = 0; s < numSurvivors; s++) {
+//            System.out.println(survivors.getIndividual(s).getFitnessScore());
+//        }
+
         return survivors;
 
     }

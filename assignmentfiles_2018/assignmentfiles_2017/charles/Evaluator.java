@@ -8,17 +8,24 @@ import org.vu.contest.ContestEvaluation;
  */
 public class Evaluator {
 
-    private double maxScore;
-    private Individual bestIndividual;
+    private static int totalNumEvaluations;
+    private int numAllowedEvaluations;
+
+    private double currentMaxScore;
+    private double allTimeMaxScore;
+    private Individual currentBestIndividual;
+    private Individual allTimeBestIndividual;
     private ContestEvaluation evaluation_;
 
-    public Evaluator(ContestEvaluation evaluation) {
+    public Evaluator(ContestEvaluation evaluation, int numAllowedEvaluations) {
         this.evaluation_ = evaluation;
+        this.numAllowedEvaluations = numAllowedEvaluations;
+        totalNumEvaluations = 0;
     }
 
     public void evaluate(Population population) {
 
-        maxScore = 0.0;
+        currentMaxScore = 0.0;
 
         for (int i = 0; i < population.getPopulationSize(); i++) {
 
@@ -27,15 +34,14 @@ public class Evaluator {
                 updateMaxScore(individual.getFitnessScore(), individual);
                 individual.incrementAge();
             } else {
-                try {
+
+                if (totalNumEvaluations < numAllowedEvaluations) {
                     Double fitness = (Double) evaluation_.evaluate(individual.getGenome());
                     individual.setFitnessScore(fitness);
                     updateMaxScore(fitness, individual);
-
-                } catch (NullPointerException e) { //TODO figure out, why evaluate return null
-                    double fitness = 0.0;
-                    individual.setFitnessScore(fitness);
-
+                    totalNumEvaluations++;
+                } else {
+                    individual.setFitnessScore(0.0);
                 }
 
             }
@@ -45,18 +51,36 @@ public class Evaluator {
     }
 
     private void updateMaxScore(double newScore, Individual individual) {
-        if (newScore > maxScore) {
-            maxScore = newScore;
-            bestIndividual = individual;
+        if (newScore > currentMaxScore) {
+            currentMaxScore = newScore;
+            currentBestIndividual = individual;
         }
+        if (newScore > allTimeMaxScore) {
+            allTimeMaxScore = newScore;
+            allTimeBestIndividual = individual;
+        }
+
+
     }
 
     public double getMaxScore() {
-        return maxScore;
+        return currentMaxScore;
+    }
+
+    public double getAlltimeMaxScore() {
+        return allTimeMaxScore;
     }
 
     public Individual getBestIndividual() {
-        return bestIndividual;
+        return currentBestIndividual;
+    }
+
+    public Individual getAllTimeBestIndividual() {
+        return allTimeBestIndividual;
+    }
+
+    public int getTotalNumEvaluations() {
+        return totalNumEvaluations;
     }
 
 }
