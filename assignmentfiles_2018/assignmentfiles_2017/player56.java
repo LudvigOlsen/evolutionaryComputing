@@ -29,7 +29,7 @@ public class player56 implements ContestSubmission {
     private double minLimit = -5.0;
     private double maxLimit = 5.0;
     private int numParents = 2;
-    private int numChildren = 80;
+    private int numChildren = 90;
     private int numSurvivors = populationSize - numChildren;
     private int maxAge = 2;
     private int showMaxScoreEvery = 500;
@@ -131,6 +131,10 @@ public class player56 implements ContestSubmission {
 
             evals = evaluator.getTotalNumEvaluations();
         }
+
+        System.out.print("\nWinning Genome: ");
+        evaluator.getAllTimeBestIndividual().printGenome();
+        System.out.println();
 
     }
 }
