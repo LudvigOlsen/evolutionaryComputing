@@ -29,6 +29,9 @@ public class ProportionalParentSelector implements ParentSelector {
         for (int i = 0; i < population.getPopulationSize(); i++) {
 
             Individual individual = population.getIndividual(i);
+
+            // TODO SphereFunction changes from having a negative total fitness to a positive
+            // TODO Leads to negative probabilities!!!!!! WHAT!?
 //            System.out.print(individual.getFitnessScore());
 //            System.out.print(" - ");
 //            System.out.print(totalFitnessScore);
