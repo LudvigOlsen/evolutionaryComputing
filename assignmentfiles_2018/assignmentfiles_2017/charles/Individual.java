@@ -1,5 +1,9 @@
 package charles;
 
+import charles.utils.Numbers;
+
+import java.text.DecimalFormat;
+
 public class Individual implements Comparable<Individual> {
 
     // Counts instances of individuals created
@@ -57,13 +61,13 @@ public class Individual implements Comparable<Individual> {
     }
 
     public void printGenome() {
+
+        System.out.print("[");
         for (int g = 0; g < getGenome().length; g++) {
-            System.out.print(g);
-            System.out.print(": ");
-            System.out.print(getGenome()[g]);
-            System.out.print("  ,  ");
+            System.out.print(Numbers.roundToNDecimals(getGenome()[g], 2)); // I'm not allowed to change formatting apparently
+            if (g != getGenome().length - 1) System.out.print(", ");
+            else System.out.println("]");
         }
-        System.out.println();
     }
 
     public void setFitnessScore(double score) {

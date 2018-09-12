@@ -9,6 +9,7 @@ import org.vu.contest.ContestEvaluation;
 public class Evaluator {
 
     private double maxScore;
+    private Individual bestIndividual;
     private ContestEvaluation evaluation_;
 
     public Evaluator(ContestEvaluation evaluation) {
@@ -23,13 +24,13 @@ public class Evaluator {
 
             Individual individual = population.getIndividual(i);
             if (individual.wasEvaluated()) {
-                updateMaxScore(individual.getFitnessScore());
+                updateMaxScore(individual.getFitnessScore(), individual);
                 individual.incrementAge();
             } else {
                 try {
                     Double fitness = (Double) evaluation_.evaluate(individual.getGenome());
                     individual.setFitnessScore(fitness);
-                    updateMaxScore(fitness);
+                    updateMaxScore(fitness, individual);
 
                 } catch (NullPointerException e) { //TODO figure out, why evaluate return null
                     double fitness = 0.0;
@@ -43,12 +44,19 @@ public class Evaluator {
 
     }
 
-    private void updateMaxScore(double newScore) {
-        if (newScore > maxScore) maxScore = newScore;
+    private void updateMaxScore(double newScore, Individual individual) {
+        if (newScore > maxScore) {
+            maxScore = newScore;
+            bestIndividual = individual;
+        }
     }
 
     public double getMaxScore() {
         return maxScore;
+    }
+
+    public Individual getBestIndividual() {
+        return bestIndividual;
     }
 
 }

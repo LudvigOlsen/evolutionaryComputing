@@ -11,9 +11,11 @@ import charles.recombinators.PerGenotypeRecombinator;
 import charles.recombinators.Recombinator;
 import charles.survivalSelectors.BestKSurvivalSelector;
 import charles.survivalSelectors.SurvivalSelector;
+import charles.utils.Numbers;
 import org.vu.contest.ContestEvaluation;
 import org.vu.contest.ContestSubmission;
 
+import java.text.DecimalFormat;
 import java.util.Properties;
 import java.util.Random;
 
@@ -107,9 +109,11 @@ public class player56 implements ContestSubmission {
                 System.out.print("Iteration: ");
                 System.out.print(evals);
                 System.out.print(" - Max score: ");
-                System.out.print(evaluator.getMaxScore());
+                System.out.print(Numbers.roundScienceNotationToNDecimals(evaluator.getMaxScore(), 3));
                 System.out.print(" - Average score: ");
-                System.out.println(fullPopulation.getAverageFitnessScore());
+                System.out.print(Numbers.roundScienceNotationToNDecimals(fullPopulation.getAverageFitnessScore(), 3));
+                System.out.print(" - Best Genome: ");
+                evaluator.getBestIndividual().printGenome();
             }
 
             evals++;
