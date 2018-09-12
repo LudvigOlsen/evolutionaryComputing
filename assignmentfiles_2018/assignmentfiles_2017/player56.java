@@ -98,15 +98,18 @@ public class player56 implements ContestSubmission {
 
             survivors.merge(children);
             fullPopulation = survivors; // Overwrite/redefine fullPopulation
+
             // Check fitness of unknown function
             evaluator.evaluate(fullPopulation);
 
             // Print max score every n iterations
-            if (evals % showMaxScoreEvery == 0){
+            if (evals % showMaxScoreEvery == 0) {
                 System.out.print("Iteration: ");
                 System.out.print(evals);
                 System.out.print(" - Max score: ");
-                System.out.println(evaluator.getMaxScore());
+                System.out.print(evaluator.getMaxScore());
+                System.out.print(" - Average score: ");
+                System.out.println(fullPopulation.getAverageFitnessScore());
             }
 
             evals++;

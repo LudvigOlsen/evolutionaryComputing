@@ -67,4 +67,9 @@ public class Population {
         return totalFitnessScore;
     }
 
+    public double getAverageFitnessScore() {
+        calculateTotalFitnessScore();
+        return totalFitnessScore / getPopulationSize();
+    }
+
 }
