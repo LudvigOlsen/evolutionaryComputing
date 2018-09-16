@@ -5,11 +5,11 @@ import charles.Population;
 
 import java.util.Random;
 
-public class PerGenotypeRecombinator implements Recombinator {
+public class UniformRecombinator implements Recombinator {
 
     private Random rand;
 
-    public PerGenotypeRecombinator(Random rand) {
+    public UniformRecombinator(Random rand) {
         this.rand = rand;
     }
 

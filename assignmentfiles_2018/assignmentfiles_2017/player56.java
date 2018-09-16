@@ -7,7 +7,7 @@ import charles.mutators.Mutator;
 import charles.mutators.NoiseMutator;
 import charles.parentSelectors.ParentSelector;
 import charles.parentSelectors.ProportionalParentSelector;
-import charles.recombinators.PerGenotypeRecombinator;
+import charles.recombinators.UniformRecombinator;
 import charles.recombinators.Recombinator;
 import charles.survivalSelectors.BestKYoungSurvivalSelector;
 import charles.survivalSelectors.SurvivalSelector;
@@ -74,7 +74,7 @@ public class player56 implements ContestSubmission {
         // Select modules here
         evaluator = new Evaluator(evaluation_, evaluations_limit_);
         ParentSelector parentSelector = new ProportionalParentSelector(rnd_);
-        Recombinator recombinator = new PerGenotypeRecombinator(rnd_);
+        Recombinator recombinator = new UniformRecombinator(rnd_);
         Mutator mutator = new NoiseMutator(rnd_, -0.05, 0.05);
         Initializer initializer = new Initializer();
         Breeder breeder = new SimpleBreeder(parentSelector, recombinator, mutator, minLimit, maxLimit);
