@@ -21,6 +21,10 @@ public class NCrossoverWithRollRecombinator implements Recombinator {
      * Rolls parent a random number of indices.
      * Uses NCrossoverRecombinator.
      * Rolls back child and parents the same number of indices as parents were first rolled with.
+     * <p>
+     * Why?: When using n-crossover there's a positional bias, where the first and last element
+     * is deterministically together/separate depending on whether n is even or odd. By randomly
+     * rolling arrays previous to recombination, this is avoided.
      *
      * @param parents       Population of parents.
      * @param numCrossovers Number of crossover points.

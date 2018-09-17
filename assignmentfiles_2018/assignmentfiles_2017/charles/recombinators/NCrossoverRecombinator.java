@@ -49,7 +49,7 @@ public class NCrossoverRecombinator implements Recombinator {
     }
 
     private int incrementParent(int currentParent, int numParents) {
-        if (currentParent == numParents-1) return 0;
+        if (currentParent == numParents - 1) return 0;
         else return currentParent + 1;
     }
 

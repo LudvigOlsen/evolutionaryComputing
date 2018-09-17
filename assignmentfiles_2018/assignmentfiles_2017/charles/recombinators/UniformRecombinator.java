@@ -15,7 +15,7 @@ public class UniformRecombinator implements Recombinator {
 
     /*
     This recombiner merges n parents by randomly selecting genotypes
-    from each of the n parents.
+    from each of the n parents. (Uniform distribution)
 
     E.g. select from individuals | 0, 1, 3, 2, 3, 0 |
     

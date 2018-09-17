@@ -78,7 +78,7 @@ public class player56 implements ContestSubmission {
         // Select modules here
         evaluator = new Evaluator(evaluation_, evaluations_limit_);
         ParentSelector parentSelector = new ProportionalParentSelector(rnd_);
-        Recombinator recombinator = new NCrossoverWithRollRecombinator(rnd_);
+        Recombinator recombinator = new UniformRecombinator(rnd_);
         Mutator mutator = new NoiseMutator(rnd_, -0.05, 0.05);
         Initializer initializer = new Initializer();
         Breeder breeder = new SimpleBreeder(parentSelector, recombinator, mutator, minLimit, maxLimit);
