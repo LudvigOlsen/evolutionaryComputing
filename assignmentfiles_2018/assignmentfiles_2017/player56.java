@@ -1,5 +1,4 @@
 import charles.Evaluator;
-import charles.Individual;
 import charles.Initializer;
 import charles.Population;
 import charles.breeders.Breeder;
@@ -8,7 +7,6 @@ import charles.mutators.Mutator;
 import charles.mutators.NoiseMutator;
 import charles.parentSelectors.ParentSelector;
 import charles.parentSelectors.ProportionalParentSelector;
-import charles.recombinators.NCrossoverWithRollRecombinator;
 import charles.recombinators.UniformRecombinator;
 import charles.recombinators.Recombinator;
 import charles.survivalSelectors.BestKYoungSurvivalSelector;
@@ -36,7 +34,7 @@ public class player56 implements ContestSubmission {
     private int numSurvivors = populationSize - numChildren;
     private int maxAge = 2;
     private int showMaxScoreEvery = 500;
-    private Boolean showMaxScore = true; // TODO Turn off for submissions!
+    private Boolean printProgress = false; // TODO Turn off for submissions!
 
 
     public player56() {
@@ -56,7 +54,7 @@ public class player56 implements ContestSubmission {
         Properties props = evaluation.getProperties();
         // Get evaluation limit
         evaluations_limit_ = Integer.parseInt(props.getProperty("Evaluations"));
-        System.out.println(evaluations_limit_);
+        if (printProgress) System.out.println(evaluations_limit_);
         // Property keys depend on specific evaluation
         // E.g. double param = Double.parseDouble(props.getProperty("property_name"));
         boolean isMultimodal = Boolean.parseBoolean(props.getProperty("Multimodal"));
@@ -88,7 +86,7 @@ public class player56 implements ContestSubmission {
         // init population
 
         Population fullPopulation = initializer.initialize(populationSize, genomeSize, minLimit, maxLimit, rnd_);
-        fullPopulation.getIndividual(0).printGenome();
+        if (printProgress) fullPopulation.getIndividual(0).printGenome();
 
         // calculate fitness
         evaluator.evaluate(fullPopulation);
@@ -107,7 +105,7 @@ public class player56 implements ContestSubmission {
             evaluator.evaluate(fullPopulation);
 
             // Print max score every n iterations
-            if (evals % showMaxScoreEvery == 0 && showMaxScore) {
+            if (evals % showMaxScoreEvery == 0 && printProgress) {
                 System.out.print("Iteration: ");
                 System.out.print(evals);
                 System.out.print(" - Max score: ");
@@ -136,9 +134,12 @@ public class player56 implements ContestSubmission {
             evals = evaluator.getTotalNumEvaluations();
         }
 
-        System.out.print("\nWinning Genome: ");
-        evaluator.getAllTimeBestIndividual().printGenome();
-        System.out.println();
+        if (printProgress) {
+            System.out.print("\nWinning Genome: ");
+            evaluator.getAllTimeBestIndividual().printGenome();
+            System.out.println();
+        }
+
 
     }
 }
