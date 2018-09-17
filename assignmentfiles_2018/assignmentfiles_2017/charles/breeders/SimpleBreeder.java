@@ -25,7 +25,7 @@ public class SimpleBreeder implements Breeder {
     }
 
     @Override
-    public Population breedChildren(Population population, int numParents, int numChildren) {
+    public Population breedChildren(Population population, int numParents, int numChildren, int numCrossover) {
 
         Population children = new Population();
 
@@ -35,7 +35,7 @@ public class SimpleBreeder implements Breeder {
 
             // Create Children
             // Recombination
-            Individual child = recombinator.combine(parents, minLimit, maxLimit);
+            Individual child = recombinator.combine(parents, numCrossover, minLimit, maxLimit);
             // Mutation
             mutator.mutate(child);
 

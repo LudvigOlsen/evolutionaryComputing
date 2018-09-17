@@ -18,20 +18,22 @@ public class UniformRecombinator implements Recombinator {
     from each of the n parents.
 
     E.g. select from individuals | 0, 1, 3, 2, 3, 0 |
+    
+    Note: Does not use numCrossovers parameter as all params are randomly selected.
 
      */
     @Override
-    public Individual combine(Population parents, double minLimit, double maxLimit) {
+    public Individual combine(Population parents, int numCrossovers, double minLimit, double maxLimit) {
         int genomeSize = parents.getIndividual(0).getGenomeSize();
-        int numIndividuals = parents.getPopulationSize();
+        int numParents = parents.getPopulationSize();
 
-        assert genomeSize >= numIndividuals;
+        assert genomeSize >= numParents;
 
         double[] childGenome = new double[genomeSize];
 
         for (int gt = 0; gt < genomeSize; gt++) {
-            int fromIndividual = (int) Math.round(rand.nextDouble() * (numIndividuals - 1)); // TODO should use Random() instead
-            childGenome[gt] = parents.getIndividual(fromIndividual).getGenome()[gt];
+            int fromParent = (int) Math.round(rand.nextDouble() * (numParents - 1));
+            childGenome[gt] = parents.getIndividual(fromParent).getGenome()[gt];
         }
 
         return new Individual(childGenome, minLimit, maxLimit);

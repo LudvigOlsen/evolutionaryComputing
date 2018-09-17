@@ -12,7 +12,7 @@ public interface Breeder {
     /**
      * Method for breeding children
      * Often looking something like:
-     *
+     * <p>
      * Select Parents
      * Breed children
      * - Recombination or Cloning
@@ -20,7 +20,7 @@ public interface Breeder {
      *
      * @return Population
      */
-    public Population breedChildren(Population population, int numParents, int numChildren);
+    public Population breedChildren(Population population, int numParents, int numChildren, int numCrossover);
 
 
 }

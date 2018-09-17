@@ -1,4 +1,5 @@
 import charles.Evaluator;
+import charles.Individual;
 import charles.Initializer;
 import charles.Population;
 import charles.breeders.Breeder;
@@ -7,6 +8,7 @@ import charles.mutators.Mutator;
 import charles.mutators.NoiseMutator;
 import charles.parentSelectors.ParentSelector;
 import charles.parentSelectors.ProportionalParentSelector;
+import charles.recombinators.NCrossoverWithRollRecombinator;
 import charles.recombinators.UniformRecombinator;
 import charles.recombinators.Recombinator;
 import charles.survivalSelectors.BestKYoungSurvivalSelector;
@@ -28,11 +30,13 @@ public class player56 implements ContestSubmission {
     private int genomeSize = 10;
     private double minLimit = -5.0;
     private double maxLimit = 5.0;
+    private int numCrossover = 5; // Not used with UniformRecombinator
     private int numParents = 2;
     private int numChildren = 90;
     private int numSurvivors = populationSize - numChildren;
     private int maxAge = 2;
     private int showMaxScoreEvery = 500;
+    private Boolean showMaxScore = true; // TODO Turn off for submissions!
 
 
     public player56() {
@@ -74,7 +78,7 @@ public class player56 implements ContestSubmission {
         // Select modules here
         evaluator = new Evaluator(evaluation_, evaluations_limit_);
         ParentSelector parentSelector = new ProportionalParentSelector(rnd_);
-        Recombinator recombinator = new UniformRecombinator(rnd_);
+        Recombinator recombinator = new NCrossoverWithRollRecombinator(rnd_);
         Mutator mutator = new NoiseMutator(rnd_, -0.05, 0.05);
         Initializer initializer = new Initializer();
         Breeder breeder = new SimpleBreeder(parentSelector, recombinator, mutator, minLimit, maxLimit);
@@ -91,7 +95,7 @@ public class player56 implements ContestSubmission {
 
         while (evals < evaluations_limit_) {
             //System.out.println("eval" + evals);
-            Population children = breeder.breedChildren(fullPopulation, numParents, numChildren);
+            Population children = breeder.breedChildren(fullPopulation, numParents, numChildren, numCrossover);
 
             // Select which from the previous should live on
             Population survivors = survivalSelector.selectSurvivors(fullPopulation, numSurvivors, maxAge);
@@ -103,7 +107,7 @@ public class player56 implements ContestSubmission {
             evaluator.evaluate(fullPopulation);
 
             // Print max score every n iterations
-            if (evals % showMaxScoreEvery == 0) {
+            if (evals % showMaxScoreEvery == 0 && showMaxScore) {
                 System.out.print("Iteration: ");
                 System.out.print(evals);
                 System.out.print(" - Max score: ");

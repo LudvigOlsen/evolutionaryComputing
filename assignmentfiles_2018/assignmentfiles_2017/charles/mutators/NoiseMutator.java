@@ -6,7 +6,12 @@ import charles.utils.ScaleToRange;
 import java.util.Random;
 
 /**
- * Every genotype is multiplied by a (for each genotype) random double between -0.1 and 0.1.
+ * Every genotype is multiplied by a (for each genotype) random double between e.g. -0.05 and 0.05.
+ * 
+ * The idea is, that each dimension in the vector space can be on different scales, meaning that 
+ * the same absolute addition to one dimension can have a smaller/bigger effect than to another dimension.
+ * Therefore we add a percentage of the original dimension to that itself.  
+ * 
  */
 public class NoiseMutator implements Mutator {
     private Random rand;
