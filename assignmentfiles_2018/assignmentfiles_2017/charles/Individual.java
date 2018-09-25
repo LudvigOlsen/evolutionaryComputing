@@ -2,8 +2,6 @@ package charles;
 
 import charles.utils.Numbers;
 
-import java.text.DecimalFormat;
-
 public class Individual implements Comparable<Individual> {
 
     // Counts instances of individuals created
