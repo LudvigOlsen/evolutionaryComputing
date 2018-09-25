@@ -61,6 +61,13 @@ public class player56 implements ContestSubmission {
         boolean hasStructure = Boolean.parseBoolean(props.getProperty("Regular"));
         boolean isSeparable = Boolean.parseBoolean(props.getProperty("Separable"));
 
+
+        // Properties per evaluation function
+        // Katsuura is only multimodal
+        // BentCigar is neither multimodal, regular or separable
+        // Schaffers is both multimodal and regular
+        // Sphere is both regular and separable
+
         // Do sth with property values, e.g. specify relevant settings of your algorithm
         if (isMultimodal) {
             // Do sth

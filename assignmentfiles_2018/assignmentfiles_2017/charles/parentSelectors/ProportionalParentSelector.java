@@ -24,7 +24,8 @@ public class ProportionalParentSelector implements ParentSelector {
         sampler.clearSampler(); // Remove previous mappings
         parents.clear();
 
-        Double totalFitnessScore = (Double) population.getTotalFitnessScore();
+        double fitnessBias = 5000; // TODO Adds bias to make sure we don't get negative probability
+        Double totalFitnessScore = (Double) population.getTotalFitnessScore() + fitnessBias * population.getPopulationSize();
 
         for (int i = 0; i < population.getPopulationSize(); i++) {
 
@@ -38,7 +39,7 @@ public class ProportionalParentSelector implements ParentSelector {
 //            System.out.print(" - ");
 //            System.out.println(individual.getFitnessScore() / totalFitnessScore);
 
-            sampler.add(individual, (Double) (individual.getFitnessScore() + 1E-5) / (totalFitnessScore + 1E-5));
+            sampler.add(individual, (Double) (individual.getFitnessScore() + 1E-5 + fitnessBias) / (totalFitnessScore + 1E-5));
 
         }
 
