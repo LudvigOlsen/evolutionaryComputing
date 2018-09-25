@@ -30,7 +30,7 @@ public class player56 implements ContestSubmission {
     private int numCrossover = 5; // Not used with UniformRecombinator
     private int numParents = 2;
     private int numChildren = 90;
-    private int numSurvivors = populationSize - numChildren;
+    // private int numSurvivors = populationSize - numChildren;
     private int maxAge = 2;
     private int showMaxScoreEvery = 500;
     private Boolean printProgress = true; // TODO Turn off for submissions!
