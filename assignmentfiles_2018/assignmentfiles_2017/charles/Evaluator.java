@@ -59,8 +59,7 @@ public class Evaluator {
             allTimeMaxScore = newScore;
             allTimeBestIndividual = individual;
         }
-
-
+        
     }
 
     public double getMaxScore() {
