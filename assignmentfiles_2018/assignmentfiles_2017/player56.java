@@ -102,14 +102,14 @@ public class player56 implements ContestSubmission {
             //System.out.println("eval" + evals);
             Population children = breeder.breedChildren(fullPopulation, numParents, numChildren, numCrossover);
 
-            // Select which from the previous should live on
-            Population survivors = survivalSelector.selectSurvivors(fullPopulation, numSurvivors, maxAge);
-
-            survivors.merge(children);
-            fullPopulation = survivors; // Overwrite/redefine fullPopulation TODO Doesn't work??
+            // Merge with parents
+            fullPopulation.merge(children);
 
             // Check fitness of unknown function
             evaluator.evaluate(fullPopulation);
+
+            // Select which from the previous should live on
+            fullPopulation = survivalSelector.selectSurvivors(fullPopulation, populationSize, maxAge);
 
             // Print max score every n iterations
             if (evals % showMaxScoreEvery == 0 && printProgress) {
