@@ -1,5 +1,7 @@
 package charles.utils;
 
+import java.util.ArrayList;
+
 /**
  * Rolls an array by n indices.
  * I.e. [0,1,2,3] => [1,2,3,0]
@@ -38,6 +40,22 @@ public class Roller {
 
         return rolledArray;
 
+    }
+
+
+    /**
+     * Wrapper for rolling ArrayList of double arrays.
+     * All double arrays are rolled with n.
+     *
+     * @param arr List of arrays to roll.
+     * @param n   Number of indices to roll.
+     * @return List of rolled arrays.
+     */
+    public static ArrayList<double[]> roll(ArrayList<double[]> arr, int n) {
+        for (int i = 0; i < arr.size(); i++) {
+            arr.set(i, roll(arr.get(i), n));
+        }
+        return arr;
     }
 
 }

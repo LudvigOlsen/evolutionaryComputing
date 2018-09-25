@@ -15,8 +15,7 @@ import charles.utils.Numbers;
 import org.vu.contest.ContestEvaluation;
 import org.vu.contest.ContestSubmission;
 
-import java.util.Properties;
-import java.util.Random;
+import java.util.*;
 
 public class player56 implements ContestSubmission {
     Random rnd_;
@@ -25,9 +24,9 @@ public class player56 implements ContestSubmission {
     private int evaluations_limit_;
 
     private int populationSize = 100;
-    private int genomeSize = 10;
-    private double minLimit = -5.0;
-    private double maxLimit = 5.0;
+    private List<Integer> genomeSizes = Arrays.asList(10, 10);
+    private List<Double> minLimits = Arrays.asList(-5.0, 0.0);
+    private List<Double> maxLimits = Arrays.asList(5.0, 1.0);
     private int numCrossover = 5; // Not used with UniformRecombinator
     private int numParents = 2;
     private int numChildren = 90;
@@ -82,53 +81,54 @@ public class player56 implements ContestSubmission {
 
         // Select modules here
         evaluator = new Evaluator(evaluation_, evaluations_limit_);
-        ParentSelector parentSelector = new ProportionalParentSelector(rnd_);
+        ParentSelector parentSelector = new ProportionalParentSelector(rnd_, 5000.0);
         Recombinator recombinator = new UniformRecombinator(rnd_);
-        Mutator mutator = new NoiseMutator(rnd_, -0.05, 0.05);
+        Mutator mutator = new NoiseMutator(rnd_, Arrays.asList(-0.05, -0.05), Arrays.asList(0.05, 0.05));
         Initializer initializer = new Initializer();
-        Breeder breeder = new SimpleBreeder(parentSelector, recombinator, mutator, minLimit, maxLimit);
+        Breeder breeder = new SimpleBreeder(parentSelector, recombinator, mutator, minLimits, maxLimits);
         SurvivalSelector survivalSelector = new BestKYoungSurvivalSelector();
 
-        int evals = 0;
+        int numEvaluations = 0;
         // init population
 
-        Population fullPopulation = initializer.initialize(populationSize, genomeSize, minLimit, maxLimit, rnd_);
-        if (printProgress) fullPopulation.getIndividual(0).printGenome();
+        Population fullPopulation = initializer.initialize(populationSize, genomeSizes, minLimits, maxLimits, rnd_);
+        if (printProgress) fullPopulation.getIndividual(0).printRepresentation();
 
         // calculate fitness
         evaluator.evaluate(fullPopulation);
 
-        while (evals < evaluations_limit_) {
+        while (numEvaluations < evaluations_limit_) {
             //System.out.println("eval" + evals);
             Population children = breeder.breedChildren(fullPopulation, numParents, numChildren, numCrossover);
 
-            // Select which from the previous should live on
-            Population survivors = survivalSelector.selectSurvivors(fullPopulation, numSurvivors, maxAge);
-
-            survivors.merge(children);
-            fullPopulation = survivors; // Overwrite/redefine fullPopulation TODO Doesn't work??
+            // Merge with parents
+            fullPopulation.merge(children);
 
             // Check fitness of unknown function
             evaluator.evaluate(fullPopulation);
 
+            // Select which from the previous should live on
+            fullPopulation = survivalSelector.selectSurvivors(fullPopulation, populationSize, maxAge);
+
+
             // Print max score every n iterations
-            if (evals % showMaxScoreEvery == 0 && printProgress) {
+            if (numEvaluations % showMaxScoreEvery == 0 && printProgress) {
                 System.out.print("Iteration: ");
-                System.out.print(evals);
+                System.out.print(numEvaluations);
                 System.out.print(" - Max score: ");
                 System.out.print(Numbers.roundScienceNotationToNDecimals(evaluator.getMaxScore(), 3));
                 System.out.print(" - Average score: ");
                 System.out.print(Numbers.roundScienceNotationToNDecimals(fullPopulation.getAverageFitnessScore(), 3));
                 System.out.print(" - Best Genome: ");
-                evaluator.getBestIndividual().printGenome();
+                evaluator.getBestIndividual().printRepresentation();
                 System.out.print(" - All time max score: ");
                 System.out.print(Numbers.roundScienceNotationToNDecimals(evaluator.getAlltimeMaxScore(), 3));
                 System.out.print(" - All time Best Genome: ");
-                evaluator.getAllTimeBestIndividual().printGenome();
+                evaluator.getAllTimeBestIndividual().printRepresentation();
 
 
 //                System.out.print(" - Genome 3: "); // For checking that if changes over time
-//                fullPopulation.getIndividual(3).printGenome();
+//                fullPopulation.getIndividual(3).printRepresentation();
 //                System.out.print(" - Age: ");
 //                System.out.print(fullPopulation.getIndividual(3).getAge());
 //                System.out.print(" - ID: ");
@@ -138,12 +138,12 @@ public class player56 implements ContestSubmission {
 //                System.out.println();
             }
 
-            evals = evaluator.getTotalNumEvaluations();
+            numEvaluations = evaluator.getTotalNumEvaluations();
         }
 
         if (printProgress) {
             System.out.print("\nWinning Genome: ");
-            evaluator.getAllTimeBestIndividual().printGenome();
+            evaluator.getAllTimeBestIndividual().printRepresentation();
             System.out.println();
         }
 
