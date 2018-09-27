@@ -34,7 +34,7 @@ public class player56 implements ContestSubmission {
     private int numSurvivors = populationSize - numChildren;
     private int maxAge = 2;
     private int showMaxScoreEvery = 500;
-    private Boolean printProgress = false; // TODO Turn off for submissions!
+    private Boolean printProgress = true; // TODO Turn off for submissions!
 
 
     public player56() {

@@ -71,7 +71,6 @@ public class Individual implements Comparable<Individual> {
     public void setFitnessScore(double score) {
         fitnessScore = score;
         wasEvaluatedFlag = true;
-
     }
 
     public double getFitnessScore() {
