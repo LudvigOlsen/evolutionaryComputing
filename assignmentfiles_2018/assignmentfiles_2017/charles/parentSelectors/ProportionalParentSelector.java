@@ -11,7 +11,8 @@ public class ProportionalParentSelector implements ParentSelector {
     private Random rand;
     private WeightedSampler sampler;
     private Population parents;
-    private double fitnessBias; // TODO Adds bias to make sure we don't get negative probability - e.g. 5000
+    private double fitnessBias; // TODO Adds bias to make sure we don't get negative probability - e.g. 5000 
+                                // (This decreases the proportional differences though. See book)
 
     public ProportionalParentSelector(Random rand, double fitnessBias) {
         this.rand = rand;

@@ -5,8 +5,9 @@ import charles.breeders.Breeder;
 import charles.breeders.SimpleBreeder;
 import charles.mutators.Mutator;
 import charles.mutators.UncorrelatedSelfAdaptiveMutator;
+import charles.parentSelectors.ExponentialRankingSelector;
+import charles.parentSelectors.LinearRankingSelector;
 import charles.parentSelectors.ParentSelector;
-import charles.parentSelectors.ProportionalParentSelector;
 import charles.recombinators.Recombinator;
 import charles.recombinators.UniformRecombinator;
 import charles.survivalSelectors.BestKYoungSurvivalSelector;
@@ -19,8 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.Random;
-
-import static charles.mutators.CorrelatedSelfAdaptiveMutator.calculateNumAlphas;
 
 public class player56 implements ContestSubmission {
     Random rnd_;
@@ -86,7 +85,9 @@ public class player56 implements ContestSubmission {
 
         // Select modules here
         evaluator = new Evaluator(evaluation_, evaluations_limit_);
-        ParentSelector parentSelector = new ProportionalParentSelector(rnd_, 5000.0);
+        // ParentSelector parentSelector = new ProportionalParentSelector(rnd_, 5000.0);
+        ParentSelector parentSelector = new LinearRankingSelector(rnd_, 2);
+//        ParentSelector parentSelector = new ExponentialRankingSelector(rnd_);
         Recombinator recombinator = new UniformRecombinator(rnd_);
         //Mutator mutator = new NoiseMutator(rnd_, Arrays.asList(-0.05, -0.05), Arrays.asList(0.05, 0.05));
         Mutator mutator = new UncorrelatedSelfAdaptiveMutator(rnd_, 1.0,
