@@ -7,15 +7,20 @@ import charles.mutators.Mutator;
 import charles.mutators.UncorrelatedSelfAdaptiveMutator;
 import charles.parentSelectors.ParentSelector;
 import charles.parentSelectors.ProportionalParentSelector;
-import charles.recombinators.UniformRecombinator;
 import charles.recombinators.Recombinator;
+import charles.recombinators.UniformRecombinator;
 import charles.survivalSelectors.BestKYoungSurvivalSelector;
 import charles.survivalSelectors.SurvivalSelector;
 import charles.utils.Numbers;
 import org.vu.contest.ContestEvaluation;
 import org.vu.contest.ContestSubmission;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
+import java.util.Random;
+
+import static charles.mutators.CorrelatedSelfAdaptiveMutator.calculateNumAlphas;
 
 public class player56 implements ContestSubmission {
     Random rnd_;
@@ -24,9 +29,9 @@ public class player56 implements ContestSubmission {
     private int evaluations_limit_;
 
     private int populationSize = 100;
-    private List<Integer> genomeArraySizes = Arrays.asList(10, 10);
-    private List<Double> minLimits = Arrays.asList(-5.0, 1E-3);
-    private List<Double> maxLimits = Arrays.asList(5.0, 1.5);
+    private List<Integer> genomeArraySizes = Arrays.asList(10, 10); //, calculateNumAlphas(10));
+    private List<Double> minLimits = Arrays.asList(-5.0, 1E-3); //, -Math.PI);
+    private List<Double> maxLimits = Arrays.asList(5.0, 1.5); //, Math.PI);
     private int numCrossover = 5; // Not used with UniformRecombinator
     private int numParents = 2;
     private int numChildren = 90;
@@ -86,6 +91,8 @@ public class player56 implements ContestSubmission {
         //Mutator mutator = new NoiseMutator(rnd_, Arrays.asList(-0.05, -0.05), Arrays.asList(0.05, 0.05));
         Mutator mutator = new UncorrelatedSelfAdaptiveMutator(rnd_, 1.0,
                 1.0);
+//        Mutator mutator = new CorrelatedSelfAdaptiveMutator(rnd_, 1.0,
+//                1.0, 5);
         Initializer initializer = new Initializer();
         Breeder breeder = new SimpleBreeder(parentSelector, recombinator, mutator, minLimits, maxLimits);
         SurvivalSelector survivalSelector = new BestKYoungSurvivalSelector();

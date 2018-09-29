@@ -1,5 +1,9 @@
 package charles.utils;
 
+import java.util.Arrays;
+
+import static charles.utils.Numbers.roundScienceNotationToNDecimals;
+
 public class DoubleMatrix2D implements Matrix {
 
     private int[] shape; // [row, col]
@@ -8,10 +12,7 @@ public class DoubleMatrix2D implements Matrix {
     private double[][] matrix;
 
     public DoubleMatrix2D(double[][] arr) {
-        allRowsHaveSameLength(arr);
-        this.shape = inferShape(arr);
-        this.matrix = arr;
-        setLongestAndShortestDimension();
+        setMatrix(arr);
     }
 
     public DoubleMatrix2D(int[] shape) {
@@ -112,7 +113,18 @@ public class DoubleMatrix2D implements Matrix {
         return new DoubleMatrix2D(product);
     }
 
-    private double sum(double[] arr) {
+    public DoubleMatrix2D add1DVectorUsingBroadcasting(double[] otherArray) {
+        assert shape[0] == otherArray.length;
+
+        DoubleMatrix2D newMatrix = new DoubleMatrix2D(getDoubleArray());
+        for (int col = 0; col < shape[1]; col++) {
+            newMatrix.setCol(col, multiplyElementwise(getCol(col), otherArray));
+        }
+
+        return newMatrix;
+    }
+
+    public static double sum(double[] arr) {
         double sum_ = 0;
         for (double e : arr) sum_ += e;
         return sum_;
@@ -129,13 +141,30 @@ public class DoubleMatrix2D implements Matrix {
         }
         return column;
     }
-    
+
+    public void setCol(int index, double[] newCol) {
+        for (int row = 0; row < shape[0]; row++) {
+            matrix[row][index] = newCol[row];
+        }
+    }
+
     public double getElement(int i, int j) {
         return matrix[i][j];
     }
 
     public void setElement(int i, int j, double value) {
         matrix[i][j] = value;
+    }
+
+    public double[][] getDoubleArray() {
+        return matrix;
+    }
+
+    public void setMatrix(double[][] arr) {
+        allRowsHaveSameLength(arr);
+        this.shape = inferShape(arr);
+        this.matrix = arr;
+        setLongestAndShortestDimension();
     }
 
     private void setLongestAndShortestDimension() {
@@ -146,5 +175,33 @@ public class DoubleMatrix2D implements Matrix {
             longestDimension = 0;
             shortestDimension = 1;
         }
+    }
+
+    public String toString() {
+        return arrayToString(matrix);
+    }
+
+    public String arrayToString(double[][] arr) {
+
+        StringBuilder builder = new StringBuilder();
+
+        for (int i = 0; i < getShape()[0]; i++) {
+            builder.append("|");
+            for (int j = 0; j < getShape()[1]; j++) {
+                String num = Double.toString(roundScienceNotationToNDecimals(arr[i][j], 2));
+                builder.append(num).append(addCharNTimes(" ", (7 - num.length())));
+                builder.append("|");
+            }
+            builder.append("\n");
+        }
+        return builder.toString();
+    }
+
+    private String addCharNTimes(String s, int n) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            builder.append(s);
+        }
+        return builder.toString();
     }
 }
