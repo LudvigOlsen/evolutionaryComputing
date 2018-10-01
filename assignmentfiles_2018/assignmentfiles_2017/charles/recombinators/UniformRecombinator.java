@@ -35,19 +35,18 @@ public class UniformRecombinator implements Recombinator {
 
         for (int i = 0; i < minLimits.size(); i++) {
             childGenome.add(combineSingleGenomeArray(parents, i,
-                    parents.getIndividual(0).getGenomeArraySize(i),
-                    numParents));
+                    parents.getIndividual(0).getGenomeArraySize(i)));
         }
 
 
         return new Individual(childGenome, minLimits, maxLimits);
     }
 
-    private double[] combineSingleGenomeArray(Population parents, int genomeIndex, int genomeSize, int numParents) {
+    private double[] combineSingleGenomeArray(Population parents, int genomeIndex, int genomeSize) {
 
         double[] childGenomeArray = new double[genomeSize];
         for (int gt = 0; gt < genomeSize; gt++) {
-            int fromParent = (int) Math.round(rand.nextDouble() * (numParents - 1));
+            int fromParent = (int) Math.round(rand.nextDouble() * (parents.getPopulationSize() - 1));
             childGenomeArray[gt] = parents.getIndividual(fromParent).getGenome().get(genomeIndex)[gt];
         }
 

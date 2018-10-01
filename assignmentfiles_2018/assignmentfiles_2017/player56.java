@@ -8,6 +8,7 @@ import charles.mutators.UncorrelatedSelfAdaptiveMutator;
 import charles.parentSelectors.ExponentialRankingSelector;
 import charles.parentSelectors.LinearRankingSelector;
 import charles.parentSelectors.ParentSelector;
+import charles.recombinators.BlendCrossoverRecombinator;
 import charles.recombinators.Recombinator;
 import charles.recombinators.UniformRecombinator;
 import charles.survivalSelectors.BestKYoungSurvivalSelector;
@@ -89,9 +90,10 @@ public class player56 implements ContestSubmission {
         ParentSelector parentSelector = new LinearRankingSelector(rnd_, 2);
 //        ParentSelector parentSelector = new ExponentialRankingSelector(rnd_);
         Recombinator recombinator = new UniformRecombinator(rnd_);
+//        Recombinator recombinator = new BlendCrossoverRecombinator(rnd_, 0.1); // Don't use on sigmas
         //Mutator mutator = new NoiseMutator(rnd_, Arrays.asList(-0.05, -0.05), Arrays.asList(0.05, 0.05));
-        Mutator mutator = new UncorrelatedSelfAdaptiveMutator(rnd_, 1.0,
-                1.0);
+        Mutator mutator = new UncorrelatedSelfAdaptiveMutator(rnd_, 0.22, // 1/sqrt(n)
+                0.39);
 //        Mutator mutator = new CorrelatedSelfAdaptiveMutator(rnd_, 1.0,
 //                1.0, 5);
         Initializer initializer = new Initializer();
