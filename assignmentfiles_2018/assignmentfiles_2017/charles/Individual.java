@@ -15,12 +15,14 @@ public class Individual implements Comparable<Individual> {
     private Boolean wasEvaluatedFlag = false;
     private int age;
     private int id;
+    private double mutStrategy;
 
     public Individual(double[] genome, double minLimit, double maxLimit) {
         this.genome = genome;
         this.minLimit = minLimit;
         this.maxLimit = maxLimit;
         this.age = 0;
+        this.mutStrategy = 1.0;
 
         individualsCreatedCounter++;
         this.id = individualsCreatedCounter;
@@ -79,6 +81,14 @@ public class Individual implements Comparable<Individual> {
 
     public int getAge() {
         return age;
+    }
+
+    public double getMutStrategy(){
+        return mutStrategy;
+    }
+
+    public void setMutStrategy(double mutStrategy){
+        this.mutStrategy = mutStrategy;
     }
 
     public void incrementAge() {
