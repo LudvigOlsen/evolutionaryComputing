@@ -36,7 +36,12 @@ public class UniformRecombinator implements Recombinator {
             childGenome[gt] = parents.getIndividual(fromParent).getGenome()[gt];
         }
 
-        return new Individual(childGenome, minLimit, maxLimit);
+        Individual individual = new Individual(childGenome, minLimit, maxLimit);
+        // set the mutator:
+        int fromParent = (int) Math.round(rand.nextDouble() * (numParents - 1));
+        individual.setMutStrategy(parents.getIndividual(fromParent).getMutStrategy());
+
+        return individual;//new Individual(childGenome, minLimit, maxLimit);
     }
 
 }

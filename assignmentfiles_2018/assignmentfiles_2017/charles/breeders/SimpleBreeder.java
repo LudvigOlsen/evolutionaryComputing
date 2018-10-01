@@ -37,6 +37,7 @@ public class SimpleBreeder implements Breeder {
             // Recombination
             Individual child = recombinator.combine(parents, numCrossover, minLimit, maxLimit);
             // Mutation
+
             mutator.mutate(child);
 
             // Add child to population

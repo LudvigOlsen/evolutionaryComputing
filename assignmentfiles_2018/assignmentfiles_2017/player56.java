@@ -84,7 +84,7 @@ public class player56 implements ContestSubmission {
         evaluator = new Evaluator(evaluation_, evaluations_limit_);
         ParentSelector parentSelector = new ProportionalParentSelector(rnd_);
         Recombinator recombinator = new UniformRecombinator(rnd_);
-        Mutator mutator = new SelfAdaptiveMutator(rnd_, 5.0, -5.0);//new NonUniformMutator(rnd_, 0.2);
+        Mutator mutator = new SelfAdaptiveMutator(rnd_, 5.0, -5.0, genomeSize);//new NonUniformMutator(rnd_, 0.2);
         Initializer initializer = new Initializer();
         Breeder breeder = new SimpleBreeder(parentSelector, recombinator, mutator, minLimit, maxLimit);
         SurvivalSelector survivalSelector = new BestKYoungSurvivalSelector();

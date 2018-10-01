@@ -11,12 +11,19 @@ with the individual.
  */
 public class SelfAdaptiveMutator implements Mutator{
     private Random rand;
-    private double learningRate;
+    private double learningRate, minStepSize;
     private double uppderbound, lowerbound;
 
-    public SelfAdaptiveMutator(Random rand, double uppderbound, double lowerbound){
+    public SelfAdaptiveMutator(Random rand, double uppderbound, double lowerbound, int problemSize){
         this.rand = rand;
-        this.learningRate = 1;
+
+        this.minStepSize = 0.0001;
+        this.learningRate = 1/java.lang.Math.sqrt(problemSize);
+
+        this.uppderbound = uppderbound;
+        this.lowerbound = lowerbound;
+
+
     }
 
     @Override
@@ -50,13 +57,13 @@ public class SelfAdaptiveMutator implements Mutator{
 
     public void mutateMutationStrategy(Individual individual){
         double oldMutStep = individual.getMutStrategy();
-        System.out.println("Old :" + oldMutStep);
+        //System.out.println("Old :" + oldMutStep);
         double newMutStep = oldMutStep * java.lang.Math.exp(learningRate * rand.nextGaussian());
-        System.out.println("new: " + newMutStep);
+        //System.out.println("new: " + newMutStep);
 
-        if (newMutStep < 0.01){
+        if (newMutStep < minStepSize){
             //System.out.println("Very Small: " + newMutStep);
-            newMutStep = 0.01;
+            newMutStep = minStepSize;
         }
         individual.setMutStrategy(newMutStep);
     }
