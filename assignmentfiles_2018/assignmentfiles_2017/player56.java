@@ -3,8 +3,8 @@ import charles.Initializer;
 import charles.Population;
 import charles.breeders.Breeder;
 import charles.breeders.SimpleBreeder;
-import charles.mutators.Mutator;
-import charles.mutators.NoiseMutator;
+//import charles.mutators.Mutator;
+import charles.mutators.*;
 import charles.parentSelectors.ParentSelector;
 import charles.parentSelectors.ProportionalParentSelector;
 import charles.recombinators.UniformRecombinator;
@@ -84,7 +84,7 @@ public class player56 implements ContestSubmission {
         evaluator = new Evaluator(evaluation_, evaluations_limit_);
         ParentSelector parentSelector = new ProportionalParentSelector(rnd_);
         Recombinator recombinator = new UniformRecombinator(rnd_);
-        Mutator mutator = new NoiseMutator(rnd_, -0.05, 0.05);
+        Mutator mutator = new SelfAdaptiveMutator(rnd_);//new NonUniformMutator(rnd_, 0.2);
         Initializer initializer = new Initializer();
         Breeder breeder = new SimpleBreeder(parentSelector, recombinator, mutator, minLimit, maxLimit);
         SurvivalSelector survivalSelector = new BestKYoungSurvivalSelector();
@@ -93,7 +93,9 @@ public class player56 implements ContestSubmission {
         // init population
 
         Population fullPopulation = initializer.initialize(populationSize, genomeSize, minLimit, maxLimit, rnd_);
-        if (printProgress) fullPopulation.getIndividual(0).printGenome();
+
+        if (printProgress)
+            fullPopulation.getIndividual(0).printGenome();
 
         // calculate fitness
         evaluator.evaluate(fullPopulation);
