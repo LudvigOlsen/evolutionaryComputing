@@ -3,6 +3,7 @@ import charles.Initializer;
 import charles.Population;
 import charles.breeders.Breeder;
 import charles.breeders.SimpleBreeder;
+import charles.settings.IslandsAlgorithmSettings;
 import charles.settings.Presets;
 import charles.settings.SimpleAlgorithmSettings;
 import charles.utils.Numbers;
@@ -19,12 +20,13 @@ public class player56 implements ContestSubmission {
     private int evaluations_limit_;
 
     private boolean isMultimodal, hasStructure, isSeparable, isRegular;
-    SimpleAlgorithmSettings simpleSettings;
 
+    private SimpleAlgorithmSettings simpleSettings;
+    private IslandsAlgorithmSettings islandsAlgorithmSettings;
 
+    private String modelStructure = "simple"; // Or "islands"
     private int showMaxScoreEvery = 500;
     private Boolean printProgress = true; // TODO Turn off for submissions!
-
 
     public player56() {
         rnd_ = new Random();
@@ -63,40 +65,75 @@ public class player56 implements ContestSubmission {
         // Schaffers is both multimodal and regular
         // Sphere is both regular and separable
 
-        // Get simpleSettings for the current evaluation function
-        if (isMultimodal && !isRegular) {
-            // Katsuura simpleSettings
-            simpleSettings = Presets.NStepUncorrelatedMutationSettings1(rnd_);
-            if (printProgress) System.out.println("Using Katsuura Settings");
-        } else if (isMultimodal) {
-            // Schaffers simpleSettings
-            simpleSettings = Presets.OneStepUncorrelatedMutationSettings1(rnd_);
-            if (printProgress) System.out.println("Using Schaffers Settings");
-        } else if (!isRegular && !isSeparable) {
-            // Bent Cigar simpleSettings
-            simpleSettings = Presets.OneStepUncorrelatedMutationSettings1(rnd_);
-            if (printProgress) System.out.println("Using BentCigar Settings");
-        } else if (isRegular && isSeparable) {
-            // Sphere simpleSettings
-            simpleSettings = Presets.OneStepUncorrelatedMutationSettings1(rnd_);
-            if (printProgress) System.out.println("Using Sphere Settings");
+        if (modelStructure.equals("simple")) {
+            // Get simpleSettings for the current evaluation function
+            if (isMultimodal && !isRegular) {
+                // Katsuura simpleSettings
+                simpleSettings = Presets.NStepUncorrelatedMutationSettings1(rnd_);
+                if (printProgress) System.out.println("Using Katsuura Settings");
+            } else if (isMultimodal) {
+                // Schaffers simpleSettings
+                simpleSettings = Presets.NStepUncorrelatedMutationSettings2(rnd_);
+                if (printProgress) System.out.println("Using Schaffers Settings");
+            } else if (!isRegular && !isSeparable) {
+                // Bent Cigar simpleSettings
+                simpleSettings = Presets.OneStepUncorrelatedMutationSettings1(rnd_);
+                if (printProgress) System.out.println("Using BentCigar Settings");
+            } else if (isRegular && isSeparable) {
+                // Sphere simpleSettings
+                simpleSettings = Presets.OneStepUncorrelatedMutationSettings1(rnd_);
+                if (printProgress) System.out.println("Using Sphere Settings");
+            }
+        } else if (modelStructure.equals("islands")) {
+            // Get islandSettings for the current evaluation function
+            // TODO Change settings here when Islands are implemented
+            if (isMultimodal && !isRegular) {
+                // Katsuura simpleSettings
+                simpleSettings = Presets.NStepUncorrelatedMutationSettings1(rnd_);
+                if (printProgress) System.out.println("Using Katsuura Settings");
+            } else if (isMultimodal) {
+                // Schaffers simpleSettings
+                simpleSettings = Presets.NStepUncorrelatedMutationSettings2(rnd_);
+                if (printProgress) System.out.println("Using Schaffers Settings");
+            } else if (!isRegular && !isSeparable) {
+                // Bent Cigar simpleSettings
+                simpleSettings = Presets.OneStepUncorrelatedMutationSettings1(rnd_);
+                if (printProgress) System.out.println("Using BentCigar Settings");
+            } else if (isRegular && isSeparable) {
+                // Sphere simpleSettings
+                simpleSettings = Presets.OneStepUncorrelatedMutationSettings1(rnd_);
+                if (printProgress) System.out.println("Using Sphere Settings");
+            }
+
         }
 
+        if (modelStructure.equals("simple")) runSimpleStructureModel();
+        else if (modelStructure.equals("islands")) runIslandsStructureModel();
 
+        if (printProgress) {
+            System.out.print("\nWinning Genome: ");
+            evaluator.getAllTimeBestIndividual().printRepresentation();
+            System.out.println();
+        }
+
+    }
+
+    private void runSimpleStructureModel() {
         // Select modules here
         evaluator = new Evaluator(evaluation_, evaluations_limit_);
+        int numEvaluations = 0;
 
         Initializer initializer = simpleSettings.getInitializer();
         Breeder breeder = new SimpleBreeder(simpleSettings.getParentSelector(),
                 simpleSettings.getRecombinator(), simpleSettings.getMutator(),
                 simpleSettings.getMinLimits(), simpleSettings.getMaxLimits());
 
-        int numEvaluations = 0;
-        // init population
 
+        // init population
         Population fullPopulation = initializer.initialize(simpleSettings.getPopulationSize(),
                 simpleSettings.getGenomeArraySizes(), simpleSettings.getMinLimits(),
                 simpleSettings.getMaxLimits(), rnd_);
+
         if (printProgress) fullPopulation.getIndividual(0).printRepresentation();
 
         // calculate fitness
@@ -117,34 +154,56 @@ public class player56 implements ContestSubmission {
             fullPopulation = simpleSettings.getSurvivalSelector().selectSurvivors(fullPopulation,
                     simpleSettings.getPopulationSize(), simpleSettings.getMaxAge());
 
-
-            // Print max score every n iterations
-            if (numEvaluations % showMaxScoreEvery == 0 && printProgress) {
-                System.out.print("Iteration: ");
-                System.out.print(numEvaluations);
-                System.out.print(" - Max score: ");
-                System.out.print(Numbers.roundScienceNotationToNDecimals(evaluator.getMaxScore(), 3));
-                System.out.print(" - Average score: ");
-                System.out.print(Numbers.roundScienceNotationToNDecimals(fullPopulation.getAverageFitnessScore(), 3));
-                System.out.print(" - Best Genome: ");
-                evaluator.getBestIndividual().printRepresentation();
-                System.out.print(" - Best Step Sizes: ");
-                evaluator.getBestIndividual().printGenomeArray(1);
-                System.out.print(" - All time max score: ");
-                System.out.print(Numbers.roundScienceNotationToNDecimals(evaluator.getAlltimeMaxScore(), 3));
-                System.out.print(" - All time Best Genome: ");
-                evaluator.getAllTimeBestIndividual().printRepresentation();
-            }
+            // Print progress
+            progressPrinter(numEvaluations, showMaxScoreEvery, printProgress,
+                    evaluator, fullPopulation.getAverageFitnessScore());
 
             numEvaluations = evaluator.getTotalNumEvaluations();
         }
 
-        if (printProgress) {
-            System.out.print("\nWinning Genome: ");
-            evaluator.getAllTimeBestIndividual().printRepresentation();
-            System.out.println();
+    }
+
+    private void runIslandsStructureModel() {
+
+        // Select modules here
+        evaluator = new Evaluator(evaluation_, evaluations_limit_);
+        int numEvaluations = 0;
+
+        // TODO Create initializer that checks and uses the initializer setting for each tribe
+        // TODO Create islands breeder
+
+        while (numEvaluations < evaluations_limit_) {
+
+            // TODO Fill in loop
+            
+            // Print progress
+//            progressPrinter(numEvaluations, showMaxScoreEvery, printProgress,
+//                    evaluator, fullPopulation.getAverageFitnessScore());
+
+            numEvaluations = evaluator.getTotalNumEvaluations();
         }
 
+    }
+
+    private void progressPrinter(int numEvaluations, int showMaxScoreEvery, Boolean printProgress,
+                                 Evaluator evaluator, double averageFitness) {
+        // Print max score every n iterations
+        if (numEvaluations % showMaxScoreEvery == 0 && printProgress) {
+            System.out.print("Iteration: ");
+            System.out.print(numEvaluations);
+            System.out.print(" - Max score: ");
+            System.out.print(Numbers.roundScienceNotationToNDecimals(evaluator.getMaxScore(), 3));
+            System.out.print(" - Average score: ");
+            System.out.print(Numbers.roundScienceNotationToNDecimals(averageFitness, 3));
+            System.out.print(" - Best Genome: ");
+            evaluator.getBestIndividual().printRepresentation();
+            System.out.print(" - Best Step Sizes: ");
+            evaluator.getBestIndividual().printGenomeArray(1);
+            System.out.print(" - All time max score: ");
+            System.out.print(Numbers.roundScienceNotationToNDecimals(evaluator.getAlltimeMaxScore(), 3));
+            System.out.print(" - All time Best Genome: ");
+            evaluator.getAllTimeBestIndividual().printRepresentation();
+        }
 
     }
 }

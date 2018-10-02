@@ -5,6 +5,7 @@ import charles.mutators.CorrelatedSelfAdaptiveMutator;
 import charles.mutators.UncorrelatedSelfAdaptiveNStepsMutator;
 import charles.mutators.UncorrelatedSelfAdaptiveOneStepMutator;
 import charles.parentSelectors.LinearRankingSelector;
+import charles.parentSelectors.ProportionalParentSelector;
 import charles.recombinators.UniformRecombinator;
 import charles.survivalSelectors.BestKYoungSurvivalSelector;
 
@@ -34,8 +35,7 @@ public class Presets {
         );
 
     }
-
-
+    
     public static SimpleAlgorithmSettings NStepUncorrelatedMutationSettings1(Random rand) {
 
         return new SimpleAlgorithmSettings(
@@ -48,6 +48,27 @@ public class Presets {
                 90,
                 2,
                 new LinearRankingSelector(rand, 2),
+                new BestKYoungSurvivalSelector(),
+                new UniformRecombinator(rand),
+                new UncorrelatedSelfAdaptiveNStepsMutator(rand,
+                        0.22, 0.39),
+                new Initializer()
+        );
+
+    }
+
+    public static SimpleAlgorithmSettings NStepUncorrelatedMutationSettings2(Random rand) {
+
+        return new SimpleAlgorithmSettings(
+                100,
+                Arrays.asList(10, 10),       // Genome Array Sizes
+                Arrays.asList(-5.0, 1E-4),   // Minimum Limits 
+                Arrays.asList(5.0, 2.5),     // Maximum Limits
+                5,
+                2,
+                90,
+                2,
+                new ProportionalParentSelector(rand, 5000),
                 new BestKYoungSurvivalSelector(),
                 new UniformRecombinator(rand),
                 new UncorrelatedSelfAdaptiveNStepsMutator(rand,
