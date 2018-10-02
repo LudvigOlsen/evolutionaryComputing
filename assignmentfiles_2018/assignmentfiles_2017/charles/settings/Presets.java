@@ -35,7 +35,7 @@ public class Presets {
         );
 
     }
-    
+
     public static SimpleAlgorithmSettings NStepUncorrelatedMutationSettings1(Random rand) {
 
         return new SimpleAlgorithmSettings(
@@ -77,6 +77,7 @@ public class Presets {
         );
 
     }
+
 
     public static SimpleAlgorithmSettings CorrelatedMutationSettings1(Random rand) {
 
