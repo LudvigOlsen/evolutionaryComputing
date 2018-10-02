@@ -10,6 +10,7 @@ import charles.utils.Numbers;
 import org.vu.contest.ContestEvaluation;
 import org.vu.contest.ContestSubmission;
 
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.Random;
 
@@ -24,7 +25,7 @@ public class player56 implements ContestSubmission {
     private SimpleAlgorithmSettings simpleSettings;
     private IslandsAlgorithmSettings islandsAlgorithmSettings;
 
-    private String modelStructure = "simple"; // Or "islands"
+    private String modelStructure = "divergenceMetric"; // Or "islands" or divergenceMetric
     private int showMaxScoreEvery = 500;
     private Boolean printProgress = true; // TODO Turn off for submissions!
 
@@ -64,6 +65,11 @@ public class player56 implements ContestSubmission {
         // BentCigar is neither multimodal, regular or separable
         // Schaffers is both multimodal and regular
         // Sphere is both regular and separable
+
+        if (modelStructure.equals("divergenceMetric")) {
+            testDivergenceMetric();
+            throw new IllegalArgumentException("Test is done. No worries.");
+        }
 
         if (modelStructure.equals("simple")) {
             // Get simpleSettings for the current evaluation function
@@ -113,6 +119,38 @@ public class player56 implements ContestSubmission {
         if (printProgress) {
             System.out.print("\nWinning Genome: ");
             evaluator.getAllTimeBestIndividual().printRepresentation();
+            System.out.println();
+        }
+
+    }
+
+    private void testDivergenceMetric() {
+        Initializer initializer = new Initializer();
+        Population populationOne = initializer.initialize(100,
+                Arrays.asList(10, 1), Arrays.asList(-5.0, 0.0), // The extras are not used
+                Arrays.asList(5.0, 1.0), rnd_);
+
+        Population populationTwo = initializer.initialize(100,
+                Arrays.asList(10, 1), Arrays.asList(-5.0, 0.0), // The extras are not used
+                Arrays.asList(5.0, 1.0), rnd_);
+
+        populationOne.calculateGenomeProduct();
+        populationTwo.calculateGenomeProduct();
+
+        double divergenceOneTwo = populationOne.productKuhlbackLeiblerDivergence(populationTwo);
+        double divergenceTwoOne = populationTwo.productKuhlbackLeiblerDivergence(populationOne);
+        double divergenceOneOne = populationOne.productKuhlbackLeiblerDivergence(populationOne);
+        double divergenceTwoTwo = populationTwo.productKuhlbackLeiblerDivergence(populationTwo);
+
+        if (printProgress) {
+            System.out.print("Divergences (OneTwo, TwoOne, OneOne, TwoTwo): ");
+            System.out.print(divergenceOneTwo);
+            System.out.print("  ");
+            System.out.print(divergenceTwoOne);
+            System.out.print("  ");
+            System.out.print(divergenceOneOne);
+            System.out.print("  ");
+            System.out.println(divergenceTwoTwo);
             System.out.println();
         }
 
@@ -175,7 +213,7 @@ public class player56 implements ContestSubmission {
         while (numEvaluations < evaluations_limit_) {
 
             // TODO Fill in loop
-            
+
             // Print progress
 //            progressPrinter(numEvaluations, showMaxScoreEvery, printProgress,
 //                    evaluator, fullPopulation.getAverageFitnessScore());
