@@ -11,11 +11,14 @@ public class ProportionalParentSelector implements ParentSelector {
     private Random rand;
     private WeightedSampler sampler;
     private Population parents;
+    private double fitnessBias; // TODO Adds bias to make sure we don't get negative probability - e.g. 5000 
+                                // (This decreases the proportional differences though. See book)
 
-    public ProportionalParentSelector(Random rand) {
+    public ProportionalParentSelector(Random rand, double fitnessBias) {
         this.rand = rand;
         sampler = new WeightedSampler(this.rand);
         parents = new Population();
+        this.fitnessBias = fitnessBias;
     }
 
     @Override
@@ -24,22 +27,13 @@ public class ProportionalParentSelector implements ParentSelector {
         sampler.clearSampler(); // Remove previous mappings
         parents.clear();
 
-        double fitnessBias = 5000; // TODO Adds bias to make sure we don't get negative probability
-        Double totalFitnessScore = (Double) population.getTotalFitnessScore() + fitnessBias * population.getPopulationSize();
+        double totalFitnessScore = population.getTotalFitnessScore() + fitnessBias * population.getPopulationSize();
 
         for (int i = 0; i < population.getPopulationSize(); i++) {
 
             Individual individual = population.getIndividual(i);
 
-            // TODO SphereFunction changes from having a negative total fitness to a positive
-            // TODO Leads to negative probabilities!!!!!! WHAT!?
-//            System.out.print(individual.getFitnessScore());
-//            System.out.print(" - ");
-//            System.out.print(totalFitnessScore);
-//            System.out.print(" - ");
-//            System.out.println(individual.getFitnessScore() / totalFitnessScore);
-
-            sampler.add(individual, (Double) (individual.getFitnessScore() + 1E-5 + fitnessBias) / (totalFitnessScore + 1E-5));
+            sampler.add(individual, (individual.getFitnessScore() + 1E-5 + fitnessBias) / (totalFitnessScore + 1E-5));
 
         }
 

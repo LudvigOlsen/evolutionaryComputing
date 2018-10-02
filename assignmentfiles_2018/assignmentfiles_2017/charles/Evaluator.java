@@ -36,7 +36,7 @@ public class Evaluator {
             } else {
 
                 if (totalNumEvaluations < numAllowedEvaluations) {
-                    Double fitness = (Double) evaluation_.evaluate(individual.getGenome());
+                    Double fitness = (Double) evaluation_.evaluate(individual.getRepresentation());
                     individual.setFitnessScore(fitness);
                     updateMaxScore(fitness, individual);
                     totalNumEvaluations++;
@@ -59,8 +59,7 @@ public class Evaluator {
             allTimeMaxScore = newScore;
             allTimeBestIndividual = individual;
         }
-
-
+        
     }
 
     public double getMaxScore() {

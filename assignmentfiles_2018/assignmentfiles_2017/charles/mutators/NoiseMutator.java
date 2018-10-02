@@ -3,52 +3,69 @@ package charles.mutators;
 import charles.Individual;
 import charles.utils.ScaleToRange;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
  * Every genotype is multiplied by a (for each genotype) random double between e.g. -0.05 and 0.05.
- * 
- * The idea is, that each dimension in the vector space can be on different scales, meaning that 
+ * <p>
+ * The idea is, that each dimension in the vector space can be on different scales, meaning that
  * the same absolute addition to one dimension can have a smaller/bigger effect than to another dimension.
- * Therefore we add a percentage of the original dimension to that itself.  
- * 
+ * Therefore we add a percentage of the original dimension to that itself.
+ * <p>
+ * Does not use self-adaptation genotypes to calculate mutation.
  */
 public class NoiseMutator implements Mutator {
     private Random rand;
-    private double amountMin, amountMax;
+    private List<Double> amountMinimums, amountMaximums;
 
-    public NoiseMutator(Random rand, double amountMin, double amountMax) {
+    public NoiseMutator(Random rand, List<Double> amountMinimums, List<Double> amountMaximums) {
         this.rand = rand;
-        this.amountMin = amountMin;
-        this.amountMax = amountMax;
+        this.amountMinimums = amountMinimums;
+        this.amountMaximums = amountMaximums;
     }
 
-    public void setAmountMin(double amountMin) {
-        this.amountMin = amountMin;
+    public void setAmountMinimums(List<Double> amountMinimums) {
+        this.amountMinimums = amountMinimums;
     }
 
-    public void setAmountMax(double amountMax) {
-        this.amountMin = amountMax;
+    public void setAmountMaximums(List<Double> amountMaximums) {
+        this.amountMinimums = amountMaximums;
     }
 
 
     @Override
     public void mutate(Individual individual) {
 
-        double[] newGenome = new double[individual.getGenomeSize()];
+        ArrayList<double[]> newGenome = new ArrayList<>();
 
-        for (int gt = 0; gt < individual.getGenomeSize(); gt++) {
+        assert amountMaximums.size() == individual.getNumGenomeArrays();
 
-            // E.g. between -0.1 and 0.1
-            // Perhaps this should be decided from input params instead? E.g. pass a settings object?
-            double noiseAmount = ScaleToRange.scaleToRange(
-                    rand.nextDouble(), 0.0, 1.0, amountMin, amountMax);
-
-            double currentGenotype = individual.getGenome()[gt];
-            newGenome[gt] = currentGenotype + (currentGenotype * noiseAmount);
-
+        for (int g = 0; g < individual.getNumGenomeArrays(); g++) {
+            newGenome.add(mutateSingleGenomeArray(individual.getGenome().get(g),
+                    amountMinimums.get(g), amountMaximums.get(g)));
         }
 
         individual.setGenome(newGenome);
+    }
+
+    private double[] mutateSingleGenomeArray(double[] genomeArray, double amountMin, double amountMax) {
+
+        double[] newGenomeArray = new double[genomeArray.length];
+
+        for (int gt = 0; gt < genomeArray.length; gt++) {
+
+            // Scale to range. E.g. between -0.1 and 0.1.
+            double noiseAmount = ScaleToRange.scaleToRange(
+                    rand.nextDouble(), 0.0, 1.0, amountMin, amountMax);
+
+            double currentGenotype = genomeArray[gt];
+            newGenomeArray[gt] = currentGenotype + (currentGenotype * noiseAmount);
+
+        }
+
+        return newGenomeArray;
+
     }
 }

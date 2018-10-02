@@ -6,22 +6,24 @@ import charles.mutators.Mutator;
 import charles.parentSelectors.ParentSelector;
 import charles.recombinators.Recombinator;
 
+import java.util.List;
+
 public class SimpleBreeder implements Breeder {
 
     private ParentSelector parentSelector;
     private Recombinator recombinator;
     private Mutator mutator;
-    private double minLimit;
-    private double maxLimit;
+    private List<Double> minLimits;
+    private List<Double> maxLimits;
 
 
     public SimpleBreeder(ParentSelector parentSelector, Recombinator recombinator, Mutator mutator,
-                         double minLimit, double maxLimit) {
+                         List<Double> minLimits, List<Double> maxLimits) {
         this.parentSelector = parentSelector;
         this.recombinator = recombinator;
         this.mutator = mutator;
-        this.minLimit = minLimit;
-        this.maxLimit = maxLimit;
+        this.minLimits = minLimits;
+        this.maxLimits = maxLimits;
     }
 
     @Override
@@ -35,7 +37,8 @@ public class SimpleBreeder implements Breeder {
 
             // Create Children
             // Recombination
-            Individual child = recombinator.combine(parents, numCrossover, minLimit, maxLimit);
+            Individual child = recombinator.combine(parents, numCrossover, minLimits, maxLimits);
+            
             // Mutation
             mutator.mutate(child);
 

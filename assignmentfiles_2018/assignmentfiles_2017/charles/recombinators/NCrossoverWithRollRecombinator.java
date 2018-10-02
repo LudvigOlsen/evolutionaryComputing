@@ -4,6 +4,8 @@ import charles.Individual;
 import charles.Population;
 import charles.utils.Roller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class NCrossoverWithRollRecombinator implements Recombinator {
@@ -28,20 +30,20 @@ public class NCrossoverWithRollRecombinator implements Recombinator {
      *
      * @param parents       Population of parents.
      * @param numCrossovers Number of crossover points.
-     * @param minLimit      Min limit of genotype representation.
-     * @param maxLimit      Max limit of genotype representation.
+     * @param minLimits     List of minimum limits of genotypes - one limit per genome array.
+     * @param maxLimits     List of maximum limits of genotypes - one limit per genome array.
      * @return Child.
      */
     @Override
-    public Individual combine(Population parents, int numCrossovers, double minLimit, double maxLimit) {
-        int genomeSize = parents.getIndividual(0).getGenomeSize();
+    public Individual combine(Population parents, int numCrossovers, List<Double> minLimits, List<Double> maxLimits) {
+        int genomeSize = parents.getIndividual(0).getRepresentationSize();
 
         int indicesToRoll = (int) Math.round(rand.nextDouble() * (genomeSize - 2)) + 1;
 
         // Roll parents
         rollParents(parents, indicesToRoll);
 
-        Individual child = nCrossoverRecombinator.combine(parents, numCrossovers, minLimit, maxLimit);
+        Individual child = nCrossoverRecombinator.combine(parents, numCrossovers, minLimits, maxLimits);
 
         // Roll back parents (references to individuals - not a copy/clone)
         rollParents(parents, -indicesToRoll);

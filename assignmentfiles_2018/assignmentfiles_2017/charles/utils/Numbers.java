@@ -55,7 +55,7 @@ public class Numbers {
 
             bd = bd.multiply(multiplierBD);
             bd = bd.setScale(n, RoundingMode.HALF_UP);
-            bd = bd.divide(multiplierBD);
+            bd = bd.divide(multiplierBD, 32, RoundingMode.HALF_UP);
             newDouble = bd.doubleValue();
 
         } else {
