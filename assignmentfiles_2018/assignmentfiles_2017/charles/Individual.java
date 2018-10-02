@@ -72,7 +72,7 @@ public class Individual implements Comparable<Individual> {
         return newGenome;
     }
 
-    private double[] applyLimitsToDoubleArray(double[] arr, double minLimit, double maxLimit) {
+    public static double[] applyLimitsToDoubleArray(double[] arr, double minLimit, double maxLimit) {
         final double[] newArray = new double[arr.length];
         for (int gt = 0; gt < arr.length; gt++) {
             if (arr[gt] > maxLimit) {
@@ -147,4 +147,19 @@ public class Individual implements Comparable<Individual> {
         return Double.compare(fitnessScore, individual.getFitnessScore());
     }
 
+    public List<Double> getMinLimits() {
+        return minLimits;
+    }
+
+    public void setMinLimits(List<Double> minLimits) {
+        this.minLimits = minLimits;
+    }
+
+    public List<Double> getMaxLimits() {
+        return maxLimits;
+    }
+
+    public void setMaxLimits(List<Double> maxLimits) {
+        this.maxLimits = maxLimits;
+    }
 }

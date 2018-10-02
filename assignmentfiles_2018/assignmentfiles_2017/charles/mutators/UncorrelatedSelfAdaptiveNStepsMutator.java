@@ -5,14 +5,14 @@ import charles.Individual;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class UncorrelatedSelfAdaptiveMutator implements Mutator {
+public class UncorrelatedSelfAdaptiveNStepsMutator implements Mutator {
 
     private Random rand;
     private double commonLearningRateMultiplier, coordinateSpecificLearningRateMultiplier;
 
-    public UncorrelatedSelfAdaptiveMutator(Random rand,
-                                           double commonLearningRateMultiplier,
-                                           double coordinateSpecificLearningRateMultiplier) {
+    public UncorrelatedSelfAdaptiveNStepsMutator(Random rand,
+                                                 double commonLearningRateMultiplier,
+                                                 double coordinateSpecificLearningRateMultiplier) {
         this.rand = rand;
         this.commonLearningRateMultiplier = commonLearningRateMultiplier;
         this.coordinateSpecificLearningRateMultiplier = coordinateSpecificLearningRateMultiplier;

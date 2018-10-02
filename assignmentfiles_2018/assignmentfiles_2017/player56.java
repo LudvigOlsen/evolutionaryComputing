@@ -3,22 +3,12 @@ import charles.Initializer;
 import charles.Population;
 import charles.breeders.Breeder;
 import charles.breeders.SimpleBreeder;
-import charles.mutators.Mutator;
-import charles.mutators.UncorrelatedSelfAdaptiveMutator;
-import charles.parentSelectors.ExponentialRankingSelector;
-import charles.parentSelectors.LinearRankingSelector;
-import charles.parentSelectors.ParentSelector;
-import charles.recombinators.BlendCrossoverRecombinator;
-import charles.recombinators.Recombinator;
-import charles.recombinators.UniformRecombinator;
-import charles.survivalSelectors.BestKYoungSurvivalSelector;
-import charles.survivalSelectors.SurvivalSelector;
+import charles.settings.Presets;
+import charles.settings.SimpleAlgorithmSettings;
 import charles.utils.Numbers;
 import org.vu.contest.ContestEvaluation;
 import org.vu.contest.ContestSubmission;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 
@@ -28,15 +18,10 @@ public class player56 implements ContestSubmission {
     Evaluator evaluator;
     private int evaluations_limit_;
 
-    private int populationSize = 100;
-    private List<Integer> genomeArraySizes = Arrays.asList(10, 10); //, calculateNumAlphas(10));
-    private List<Double> minLimits = Arrays.asList(-5.0, 1E-3); //, -Math.PI);
-    private List<Double> maxLimits = Arrays.asList(5.0, 1.5); //, Math.PI);
-    private int numCrossover = 5; // Not used with UniformRecombinator
-    private int numParents = 2;
-    private int numChildren = 90;
-    // private int numSurvivors = populationSize - numChildren;
-    private int maxAge = 2;
+    private boolean isMultimodal, hasStructure, isSeparable, isRegular;
+    SimpleAlgorithmSettings simpleSettings;
+
+
     private int showMaxScoreEvery = 500;
     private Boolean printProgress = true; // TODO Turn off for submissions!
 
@@ -61,10 +46,16 @@ public class player56 implements ContestSubmission {
         if (printProgress) System.out.println(evaluations_limit_);
         // Property keys depend on specific evaluation
         // E.g. double param = Double.parseDouble(props.getProperty("property_name"));
-        boolean isMultimodal = Boolean.parseBoolean(props.getProperty("Multimodal"));
-        boolean hasStructure = Boolean.parseBoolean(props.getProperty("Regular"));
-        boolean isSeparable = Boolean.parseBoolean(props.getProperty("Separable"));
+        isMultimodal = Boolean.parseBoolean(props.getProperty("Multimodal"));
+        hasStructure = Boolean.parseBoolean(props.getProperty("Regular"));
+        isSeparable = Boolean.parseBoolean(props.getProperty("Separable"));
+        isRegular = Boolean.parseBoolean(props.getProperty("Regular"));
 
+
+    }
+
+    public void run() {
+        // Run your algorithm here
 
         // Properties per evaluation function
         // Katsuura is only multimodal
@@ -72,38 +63,40 @@ public class player56 implements ContestSubmission {
         // Schaffers is both multimodal and regular
         // Sphere is both regular and separable
 
-        // Do sth with property values, e.g. specify relevant settings of your algorithm
-        if (isMultimodal) {
-            // Do sth
-        } else {
-            // Do sth else
+        // Get simpleSettings for the current evaluation function
+        if (isMultimodal && !isRegular) {
+            // Katsuura simpleSettings
+            simpleSettings = Presets.NStepUncorrelatedMutationSettings1(rnd_);
+            if (printProgress) System.out.println("Using Katsuura Settings");
+        } else if (isMultimodal) {
+            // Schaffers simpleSettings
+            simpleSettings = Presets.OneStepUncorrelatedMutationSettings1(rnd_);
+            if (printProgress) System.out.println("Using Schaffers Settings");
+        } else if (!isRegular && !isSeparable) {
+            // Bent Cigar simpleSettings
+            simpleSettings = Presets.OneStepUncorrelatedMutationSettings1(rnd_);
+            if (printProgress) System.out.println("Using BentCigar Settings");
+        } else if (isRegular && isSeparable) {
+            // Sphere simpleSettings
+            simpleSettings = Presets.OneStepUncorrelatedMutationSettings1(rnd_);
+            if (printProgress) System.out.println("Using Sphere Settings");
         }
 
-    }
-
-    public void run() {
-        // Run your algorithm here
 
         // Select modules here
         evaluator = new Evaluator(evaluation_, evaluations_limit_);
-        // ParentSelector parentSelector = new ProportionalParentSelector(rnd_, 5000.0);
-        ParentSelector parentSelector = new LinearRankingSelector(rnd_, 2);
-//        ParentSelector parentSelector = new ExponentialRankingSelector(rnd_);
-        Recombinator recombinator = new UniformRecombinator(rnd_);
-//        Recombinator recombinator = new BlendCrossoverRecombinator(rnd_, 0.1); // Don't use on sigmas
-        //Mutator mutator = new NoiseMutator(rnd_, Arrays.asList(-0.05, -0.05), Arrays.asList(0.05, 0.05));
-        Mutator mutator = new UncorrelatedSelfAdaptiveMutator(rnd_, 0.22, // 1/sqrt(n)
-                0.39);
-//        Mutator mutator = new CorrelatedSelfAdaptiveMutator(rnd_, 1.0,
-//                1.0, 5);
-        Initializer initializer = new Initializer();
-        Breeder breeder = new SimpleBreeder(parentSelector, recombinator, mutator, minLimits, maxLimits);
-        SurvivalSelector survivalSelector = new BestKYoungSurvivalSelector();
+
+        Initializer initializer = simpleSettings.getInitializer();
+        Breeder breeder = new SimpleBreeder(simpleSettings.getParentSelector(),
+                simpleSettings.getRecombinator(), simpleSettings.getMutator(),
+                simpleSettings.getMinLimits(), simpleSettings.getMaxLimits());
 
         int numEvaluations = 0;
         // init population
 
-        Population fullPopulation = initializer.initialize(populationSize, genomeArraySizes, minLimits, maxLimits, rnd_);
+        Population fullPopulation = initializer.initialize(simpleSettings.getPopulationSize(),
+                simpleSettings.getGenomeArraySizes(), simpleSettings.getMinLimits(),
+                simpleSettings.getMaxLimits(), rnd_);
         if (printProgress) fullPopulation.getIndividual(0).printRepresentation();
 
         // calculate fitness
@@ -111,7 +104,8 @@ public class player56 implements ContestSubmission {
 
         while (numEvaluations < evaluations_limit_) {
             //System.out.println("eval" + evals);
-            Population children = breeder.breedChildren(fullPopulation, numParents, numChildren, numCrossover);
+            Population children = breeder.breedChildren(fullPopulation, simpleSettings.getNumParents(),
+                    simpleSettings.getNumChildren(), simpleSettings.getNumCrossover());
 
             // Merge with parents
             fullPopulation.merge(children);
@@ -120,7 +114,8 @@ public class player56 implements ContestSubmission {
             evaluator.evaluate(fullPopulation);
 
             // Select which from the previous should live on
-            fullPopulation = survivalSelector.selectSurvivors(fullPopulation, populationSize, maxAge);
+            fullPopulation = simpleSettings.getSurvivalSelector().selectSurvivors(fullPopulation,
+                    simpleSettings.getPopulationSize(), simpleSettings.getMaxAge());
 
 
             // Print max score every n iterations
@@ -139,17 +134,6 @@ public class player56 implements ContestSubmission {
                 System.out.print(Numbers.roundScienceNotationToNDecimals(evaluator.getAlltimeMaxScore(), 3));
                 System.out.print(" - All time Best Genome: ");
                 evaluator.getAllTimeBestIndividual().printRepresentation();
-
-
-//                System.out.print(" - Genome 3: "); // For checking that if changes over time
-//                fullPopulation.getIndividual(3).printRepresentation();
-//                System.out.print(" - Age: ");
-//                System.out.print(fullPopulation.getIndividual(3).getAge());
-//                System.out.print(" - ID: ");
-//                System.out.print(fullPopulation.getIndividual(3).getId());
-//                System.out.print(" - Fitness: ");
-//                System.out.print(fullPopulation.getIndividual(3).getFitnessScore());
-//                System.out.println();
             }
 
             numEvaluations = evaluator.getTotalNumEvaluations();
