@@ -6,6 +6,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 
+import static charles.Individual.printGenomeArray;
+
 public class Population {
 
     private ArrayList<Individual> population;
@@ -53,6 +55,23 @@ public class Population {
         this.population.addAll(population.getPopulation());
     }
 
+    /**
+     * Returns subset with the individuals at the given indices.
+     *
+     * @param indices
+     * @return Subpopulation.
+     */
+    public Population subset(ArrayList<Integer> indices) {
+        Population subpopulation = new Population();
+
+        for (int p = 0; p < getPopulationSize(); p++) {
+            if (indices.contains(p)) {
+                subpopulation.addIndividual(this.population.get(p));
+            }
+        }
+        return subpopulation;
+    }
+
 
     private void calculateTotalFitnessScore() {
         double totalFitnessScore = 0.0;
@@ -81,8 +100,9 @@ public class Population {
      * Multiply all the genes together, such that the gene 1 for each individual is multiplied with each other, etc.
      * The product array, with the same size as the individual's genome, is normalized product to sum to 1.0.
      */
-    public void calculateGenomeProduct() {
+    public void calculateGenomeProduct(int numIndividualsAtATime) {
         int representationSize = getIndividual(0).getRepresentationSize();
+
         ArrayList<BigDecimal> bigDecimalGenomeProduct = new ArrayList<>();
         double[] genomeProduct = new double[representationSize];
 
@@ -90,30 +110,85 @@ public class Population {
         for (int gt = 0; gt < representationSize; gt++) {
             bigDecimalGenomeProduct.add(BigDecimal.valueOf(1.0));
         }
-        // Rescale alleles to [0.0,1.0] and multiply with the same genotype (position) in the BigDecimal ArrayList 
-        for (Individual individual : getPopulation()) {
+
+        ArrayList<ArrayList<BigDecimal>> subProducts = new ArrayList<>();
+
+        for (int s = 0; s < Math.ceil(getPopulationSize() / (float) numIndividualsAtATime); s++) {
+            ArrayList<Integer> indices = new ArrayList<>();
+
+            for (int i = s * numIndividualsAtATime; i < (s + 1) * numIndividualsAtATime; i++) {
+                if (i > getPopulationSize()) break;
+                indices.add(i);
+            }
+
+            Population subpopulation = subset(indices);
+            ArrayList<BigDecimal> subpopGenomeProduct = calculateSubpopulationGenomeProduct(subpopulation);
+
+            // Product of subpopulation genome product and population genome product
             for (int gt = 0; gt < representationSize; gt++) {
-                // Rescaling
-                double rescaledGene = ScaleToRange.scaleToRange(individual.getRepresentation()[gt],
-                        individual.getMinLimits().get(0), individual.getMaxLimits().get(0), 0.0, 1.0);
                 bigDecimalGenomeProduct.set(gt, bigDecimalGenomeProduct.get(gt).multiply(
-                        BigDecimal.valueOf(rescaledGene)));
+                        subpopGenomeProduct.get(gt)));
+            }
+
+        }
+
+        normalizeGenomeProduct(bigDecimalGenomeProduct, representationSize);
+
+        // Convert to double[]
+        for (int gt = 0; gt < representationSize; gt++) {
+            genomeProduct[gt] = bigDecimalGenomeProduct.get(gt).doubleValue();
+        }
+
+        printGenomeArray(genomeProduct);
+        this.genomeProduct = genomeProduct;
+    }
+
+    private ArrayList<BigDecimal> calculateSubpopulationGenomeProduct(Population subpopulation) {
+        int representationSize = getIndividual(0).getRepresentationSize();
+        ArrayList<BigDecimal> bigDecimalGenomeProduct = new ArrayList<>();
+
+        // Fill with 1's
+        for (int gt = 0; gt < representationSize; gt++) {
+            bigDecimalGenomeProduct.add(BigDecimal.valueOf(1.0));
+        }
+
+        // Multiply the genotype (rescaled to [1e-6, 1.0]) with the same genotype (position) in the BigDecimal ArrayList 
+        for (Individual individual : subpopulation.getPopulation()) {
+            for (int gt = 0; gt < representationSize; gt++) {
+                bigDecimalGenomeProduct.set(gt, bigDecimalGenomeProduct.get(gt).multiply(
+                        BigDecimal.valueOf(individual.getRescaledRepresentation()[gt])));
             }
         }
-        // Get sum for normalization
+
+        // Normalize 
+        normalizeGenomeProduct(bigDecimalGenomeProduct, representationSize);
+
+        return bigDecimalGenomeProduct;
+    }
+
+    private BigDecimal calculateSumOfGenomeProduct(ArrayList<BigDecimal> bigDecimalGenomeProduct,
+                                                   int representationSize) {
         BigDecimal sumOfGenomeProduct = BigDecimal.valueOf(0.0);
         for (int gt = 0; gt < representationSize; gt++) {
             sumOfGenomeProduct = sumOfGenomeProduct.add(bigDecimalGenomeProduct.get(gt));
         }
 
-        // Normalize and add to genomeProduct 
+        return sumOfGenomeProduct;
+    }
+
+    private void normalizeGenomeProduct(ArrayList<BigDecimal> bigDecimalGenomeProduct,
+                                        int representationSize) {
+
+        // Get sum for normalization
+        BigDecimal sumOfGenomeProduct = calculateSumOfGenomeProduct(bigDecimalGenomeProduct, representationSize);
+
         for (int gt = 0; gt < representationSize; gt++) {
-            genomeProduct[gt] = bigDecimalGenomeProduct.get(gt).divide(sumOfGenomeProduct,
-                    64, RoundingMode.HALF_UP).doubleValue();
+            bigDecimalGenomeProduct.set(gt, bigDecimalGenomeProduct.get(gt).divide(sumOfGenomeProduct,
+                    256, RoundingMode.HALF_UP));
         }
 
-        this.genomeProduct = genomeProduct;
     }
+
 
     public double[] getGenomeProduct() {
         return genomeProduct;
@@ -121,7 +196,7 @@ public class Population {
 
 
     /**
-     * Calculate the (Product) Kuhlback Leibler Divergence between populations. (Possibly novel method).
+     * Calculate the (Product) Kullback Leibler Divergence between populations. (Possibly novel method).
      * <p>
      * The product of all individuals in a population,
      * such that for all genome positions g in genome product GP and individual i,
@@ -137,7 +212,7 @@ public class Population {
      * @param otherPopulation A population to find the divergence from.
      * @return Kuhlback Leibler divergence of the genome products of the two populations.
      */
-    public double productKuhlbackLeiblerDivergence(Population otherPopulation) {
+    public double productKullbackLeiblerDivergence(Population otherPopulation) {
         int representationSize = getIndividual(0).getRepresentationSize();
         double[] othersGenomeProduct = otherPopulation.getGenomeProduct();
 

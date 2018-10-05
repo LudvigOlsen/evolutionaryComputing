@@ -2,6 +2,7 @@ import charles.Evaluator;
 import charles.Initializer;
 import charles.Population;
 import charles.breeders.Breeder;
+import charles.breeders.IslandBreeder;
 import charles.breeders.SimpleBreeder;
 import charles.settings.IslandsAlgorithmSettings;
 import charles.settings.Presets;
@@ -10,9 +11,13 @@ import charles.utils.Numbers;
 import org.vu.contest.ContestEvaluation;
 import org.vu.contest.ContestSubmission;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.Random;
+
+import static charles.World.calculateInterPopulationDiversity;
+import static charles.World.getAverageFitness;
 
 public class player56 implements ContestSubmission {
     Random rnd_;
@@ -25,9 +30,13 @@ public class player56 implements ContestSubmission {
     private SimpleAlgorithmSettings simpleSettings;
     private IslandsAlgorithmSettings islandsAlgorithmSettings;
 
-    private String modelStructure = "simple"; // Or "islands" or divergenceMetric
+    private ArrayList<Population> islands;
+    private ArrayList<IslandBreeder> islandBreeder;
+
+    private String modelStructure = "divergenceMetric"; // "simple or "islands" or divergenceMetric
     private int showMaxScoreEvery = 500;
-    private Boolean printProgress = false; // TODO Turn off for submissions!
+    private Boolean printProgress = true; // TODO Turn off for submissions!
+    private Boolean printDiversity = true; // This is separate from the above. Should still be false for contest submissions.
 
     public player56() {
         rnd_ = new Random();
@@ -91,24 +100,26 @@ public class player56 implements ContestSubmission {
             }
         } else if (modelStructure.equals("islands")) {
             // Get islandSettings for the current evaluation function
-            // TODO Change settings here when Islands are implemented
+            // TODO Change settings here when islands are implemented
             if (isMultimodal && !hasStructure) {
                 // Katsuura simpleSettings
-                simpleSettings = Presets.NStepUncorrelatedMutationSettings1(rnd_);
+                islandsAlgorithmSettings = Presets.basicIslandSettings1(rnd_);
                 if (printProgress) System.out.println("Using Katsuura Settings");
-            } else if (isMultimodal) {
-                // Schaffers simpleSettings
-                simpleSettings = Presets.NStepUncorrelatedMutationSettings2(rnd_);
-                if (printProgress) System.out.println("Using Schaffers Settings");
-            } else if (!hasStructure && !isSeparable) {
-                // Bent Cigar simpleSettings
-                simpleSettings = Presets.OneStepUncorrelatedMutationSettings1(rnd_);
-                if (printProgress) System.out.println("Using BentCigar Settings");
-            } else if (hasStructure && isSeparable) {
-                // Sphere simpleSettings
-                simpleSettings = Presets.OneStepUncorrelatedMutationSettings1(rnd_);
-                if (printProgress) System.out.println("Using Sphere Settings");
-            }
+            } else throw new IllegalArgumentException("Currently islands only work for katsuura");
+
+//            else if (isMultimodal) {
+//                // Schaffers simpleSettings
+//                simpleSettings = Presets.NStepUncorrelatedMutationSettings2(rnd_);
+//                if (printProgress) System.out.println("Using Schaffers Settings");
+//            } else if (!hasStructure && !isSeparable) {
+//                // Bent Cigar simpleSettings
+//                simpleSettings = Presets.OneStepUncorrelatedMutationSettings1(rnd_);
+//                if (printProgress) System.out.println("Using BentCigar Settings");
+//            } else if (hasStructure && isSeparable) {
+//                // Sphere simpleSettings
+//                simpleSettings = Presets.OneStepUncorrelatedMutationSettings1(rnd_);
+//                if (printProgress) System.out.println("Using Sphere Settings");
+//            }
 
         }
 
@@ -133,13 +144,13 @@ public class player56 implements ContestSubmission {
                 Arrays.asList(10, 1), Arrays.asList(-5.0, 0.0), // The extras are not used
                 Arrays.asList(5.0, 1.0), rnd_);
 
-        populationOne.calculateGenomeProduct();
-        populationTwo.calculateGenomeProduct();
+        populationOne.calculateGenomeProduct(10);
+        populationTwo.calculateGenomeProduct(10);
 
-        double divergenceOneTwo = populationOne.productKuhlbackLeiblerDivergence(populationTwo);
-        double divergenceTwoOne = populationTwo.productKuhlbackLeiblerDivergence(populationOne);
-        double divergenceOneOne = populationOne.productKuhlbackLeiblerDivergence(populationOne);
-        double divergenceTwoTwo = populationTwo.productKuhlbackLeiblerDivergence(populationTwo);
+        double divergenceOneTwo = populationOne.productKullbackLeiblerDivergence(populationTwo);
+        double divergenceTwoOne = populationTwo.productKullbackLeiblerDivergence(populationOne);
+        double divergenceOneOne = populationOne.productKullbackLeiblerDivergence(populationOne);
+        double divergenceTwoTwo = populationTwo.productKullbackLeiblerDivergence(populationTwo);
 
         if (printProgress) {
             System.out.print("Divergences (OneTwo, TwoOne, OneOne, TwoTwo): ");
@@ -165,7 +176,6 @@ public class player56 implements ContestSubmission {
                 simpleSettings.getRecombinator(), simpleSettings.getMutator(),
                 simpleSettings.getMinLimits(), simpleSettings.getMaxLimits());
 
-
         // init population
         Population fullPopulation = initializer.initialize(simpleSettings.getPopulationSize(),
                 simpleSettings.getGenomeArraySizes(), simpleSettings.getMinLimits(),
@@ -184,7 +194,7 @@ public class player56 implements ContestSubmission {
             // Merge with parents
             fullPopulation.merge(children);
 
-            // Check fitness of unknown function
+            // Check fitness on unknown function
             evaluator.evaluate(fullPopulation);
 
             // Select which from the previous should live on
@@ -204,18 +214,83 @@ public class player56 implements ContestSubmission {
 
         // Select modules here
         evaluator = new Evaluator(evaluation_, evaluations_limit_);
+        islands = new ArrayList<>();
+        islandBreeder = new ArrayList<>();
         int numEvaluations = 0;
+        int numGenerations = 0;
+        int epochSize = islandsAlgorithmSettings.getInitialEpochSize();
+        double diversity;
 
-        // TODO Create initializer that checks and uses the initializer setting for each tribe
+        // TODO Create initializer that checks and uses the initializer setting for each island
         // TODO Create islands breeder
+
+        Initializer initializer = islandsAlgorithmSettings.getInitializer();
+
+        // Initialize the islands and run initial evaluation
+        for (int i = 0; i < islandsAlgorithmSettings.getNumPopulations(); i++) {
+
+            islands.add(initializer.initialize(islandsAlgorithmSettings.getPopulationSizes().get(i),
+                    islandsAlgorithmSettings.getGenomeArraySizes(), islandsAlgorithmSettings.getMinLimits(),
+                    islandsAlgorithmSettings.getMaxLimits(), rnd_));
+
+            // Create a breeder for each island. This way they can vary if we want them to.
+            islandBreeder.add(new IslandBreeder(islandsAlgorithmSettings.getParentSelector(),
+                    islandsAlgorithmSettings.getRecombinator(), islandsAlgorithmSettings.getMutator(),
+                    islandsAlgorithmSettings.getMinLimits(), islandsAlgorithmSettings.getMaxLimits()));
+
+            // TODO Maybe initialize the islands n times and choose the one with largest divergence?
+
+            // Calculate fitness
+            evaluator.evaluate(islands.get(i));
+
+        }
+
+        islands.get(0).calculateGenomeProduct(10);
+
+        numGenerations++;
+
+        if (printProgress) System.out.println("\nStarting evolution\n");
 
         while (numEvaluations < evaluations_limit_) {
 
-            // TODO Fill in loop
+            // Recombine, mutate, survivor selection for each island
+            for (int i = 0; i < islandsAlgorithmSettings.getNumPopulations(); i++) {
+
+                if (numEvaluations >= evaluations_limit_) break;
+
+                Population children = islandBreeder.get(i).breedChildren(islands.get(i),
+                        islandsAlgorithmSettings.getNumParents(), islandsAlgorithmSettings.getNumChildren(),
+                        islandsAlgorithmSettings.getNumCrossover());
+
+                // Merge with parents
+                islands.get(i).merge(children);
+
+                // Check fitness on unknown function
+                evaluator.evaluate(islands.get(i));
+
+                // Select survivors
+                islands.set(i, islandsAlgorithmSettings.getSurvivalSelector()
+                        .selectSurvivors(islands.get(i), islandsAlgorithmSettings.getPopulationSizes().get(i),
+                                islandsAlgorithmSettings.getMaxAge()));
+
+                numEvaluations = evaluator.getTotalNumEvaluations();
+            }
+
+            numGenerations++;
+
+            if (numGenerations % islandsAlgorithmSettings.getCalculateDiversityEvery() == 0 && printDiversity) {
+                diversity = calculateInterPopulationDiversity(islands);
+                System.out.print("Diversity: ");
+                System.out.println(diversity);
+            }
+
+            if (numGenerations % epochSize == 0 && islandsAlgorithmSettings.getUsesGlobalization()) {
+                System.out.println("THIS IS WHERE WE MERGE");
+            }
 
             // Print progress
-//            progressPrinter(numEvaluations, showMaxScoreEvery, printProgress,
-//                    evaluator, fullPopulation.getAverageFitnessScore());
+            progressPrinter(numEvaluations, showMaxScoreEvery, printProgress,
+                    evaluator, getAverageFitness(islands));
 
             numEvaluations = evaluator.getTotalNumEvaluations();
         }

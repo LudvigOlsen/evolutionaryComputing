@@ -101,6 +101,30 @@ public class Presets {
     }
 
 
+    public static IslandsAlgorithmSettings basicIslandSettings1(Random rand) {
+
+        return new IslandsAlgorithmSettings(
+                Arrays.asList(100, 10, 10),                        // population sizes
+                Arrays.asList(10, 10, calculateNumAlphas(10)),  // Genome Array Sizes
+                Arrays.asList(-5.0, 1E-4, -Math.PI),               // Minimum Limits 
+                Arrays.asList(5.0, 2.5, Math.PI),                  // Maximum Limits
+                3,
+                100,
+                3,
+                2,
+                90,
+                2,
+                300,
+                false,
+                new LinearRankingSelector(rand, 2),
+                new BestKYoungSurvivalSelector(),
+                new UniformRecombinator(rand),
+                new UncorrelatedSelfAdaptiveNStepsMutator(rand,
+                        0.22, 0.39),
+                new Initializer()
+        );
+    }
+
 }
 
 /*
