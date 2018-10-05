@@ -37,7 +37,7 @@ public class player56 implements ContestSubmission {
     private String modelStructure = "islands"; // "simple or "islands" or divergenceMetric
     private int showMaxScoreEvery = 500;
     private Boolean printProgress = false; // TODO Turn off for submissions!
-    private Boolean printDiversity = true; // This is separate from the above. Should still be false for contest submissions.
+    private Boolean printDiversity = false; // This is separate from the above. Should still be false for contest submissions.
 
     public player56() {
         rnd_ = new Random();
@@ -88,7 +88,7 @@ public class player56 implements ContestSubmission {
                 if (printProgress) System.out.println("Using Katsuura Settings");
             } else if (isMultimodal) {
                 // Schaffers simpleSettings
-                simpleSettings = Presets.NStepUncorrelatedMutationSettings2(rnd_);
+                simpleSettings = Presets.NStepUncorrelatedMutationSettingsChaosInit(rnd_);
                 if (printProgress) System.out.println("Using Schaffers Settings");
             } else if (!hasStructure && !isSeparable) {
                 // Bent Cigar simpleSettings
@@ -108,7 +108,7 @@ public class player56 implements ContestSubmission {
                 if (printProgress) System.out.println("Using Katsuura Settings");
             } else if (isMultimodal) {
                 // Schaffers simpleSettings
-                islandsAlgorithmSettings = Presets.basicIslandSettings1(rnd_);
+                islandsAlgorithmSettings = Presets.basicIslandSettingsChaosInit5Islands(rnd_);
                 if (printProgress) System.out.println("Using Schaffers Settings");
             } else if (!hasStructure && !isSeparable) {
                 // Bent Cigar simpleSettings

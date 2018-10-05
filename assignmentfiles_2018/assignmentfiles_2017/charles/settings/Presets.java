@@ -80,6 +80,27 @@ public class Presets {
 
     }
 
+    public static SimpleAlgorithmSettings NStepUncorrelatedMutationSettingsChaosInit(Random rand) {
+
+        return new SimpleAlgorithmSettings(
+                100,
+                Arrays.asList(10, 10),       // Genome Array Sizes
+                Arrays.asList(-5.0, 1E-4),   // Minimum Limits 
+                Arrays.asList(5.0, 2.5),     // Maximum Limits
+                5,
+                2,
+                90,
+                2,
+                new ProportionalParentSelector(rand, 5000),
+                new BestKYoungSurvivalSelector(),
+                new UniformRecombinator(rand),
+                new UncorrelatedSelfAdaptiveNStepsMutator(rand,
+                        0.22, 0.39),
+                new ChaoticOppositionBasedInitializer(rand, 550)
+        );
+
+    }
+
 
     public static SimpleAlgorithmSettings CorrelatedMutationSettings1(Random rand) {
 
@@ -152,6 +173,58 @@ public class Presets {
                 new UncorrelatedSelfAdaptiveNStepsMutator(rand,
                         0.22, 0.39),
                 new BasicInitializer(rand),
+                new CircularMigrator(rand)
+        );
+    }
+
+    public static IslandsAlgorithmSettings basicIslandSettingsChaosInit1(Random rand) {
+
+        return new IslandsAlgorithmSettings(
+                Arrays.asList(50, 50, 50),                        // population sizes
+                Arrays.asList(10, 10, calculateNumAlphas(10)),  // Genome Array Sizes
+                Arrays.asList(-5.0, 1E-4, -Math.PI),               // Minimum Limits 
+                Arrays.asList(5.0, 2.5, Math.PI),                  // Maximum Limits
+                3,
+                25,
+                3,
+                2,
+                40,
+                2,
+                5,
+                3,
+                true,
+                new LinearRankingSelector(rand, 2),
+                new BestKYoungSurvivalSelector(),
+                new UniformRecombinator(rand),
+                new UncorrelatedSelfAdaptiveNStepsMutator(rand,
+                        0.22, 0.39),
+                new ChaoticOppositionBasedInitializer(rand, 550),
+                new CircularMigrator(rand)
+        );
+    }
+
+    public static IslandsAlgorithmSettings basicIslandSettingsChaosInit5Islands(Random rand) {
+
+        return new IslandsAlgorithmSettings(
+                Arrays.asList(20, 20, 20, 20, 20),                        // population sizes
+                Arrays.asList(10, 10, calculateNumAlphas(10)),  // Genome Array Sizes
+                Arrays.asList(-5.0, 1E-4, -Math.PI),               // Minimum Limits 
+                Arrays.asList(5.0, 2.5, Math.PI),                  // Maximum Limits
+                5,
+                25,
+                3,
+                2,
+                18,
+                2,
+                5,
+                2,
+                true,
+                new LinearRankingSelector(rand, 2),
+                new BestKYoungSurvivalSelector(),
+                new UniformRecombinator(rand),
+                new UncorrelatedSelfAdaptiveNStepsMutator(rand,
+                        0.22, 0.39),
+                new ChaoticOppositionBasedInitializer(rand, 550),
                 new CircularMigrator(rand)
         );
     }
