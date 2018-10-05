@@ -1,6 +1,8 @@
 package charles.settings;
 
-import charles.Initializer;
+import charles.initializers.BasicInitializer;
+import charles.initializers.ChaoticOppositionBasedInitializer;
+import charles.migrators.CircularMigrator;
 import charles.mutators.CorrelatedSelfAdaptiveMutator;
 import charles.mutators.UncorrelatedSelfAdaptiveNStepsMutator;
 import charles.mutators.UncorrelatedSelfAdaptiveOneStepMutator;
@@ -31,7 +33,7 @@ public class Presets {
                 new BestKYoungSurvivalSelector(),
                 new UniformRecombinator(rand),
                 new UncorrelatedSelfAdaptiveOneStepMutator(rand, 1.0),
-                new Initializer()
+                new BasicInitializer(rand)
         );
 
     }
@@ -52,7 +54,7 @@ public class Presets {
                 new UniformRecombinator(rand),
                 new UncorrelatedSelfAdaptiveNStepsMutator(rand,
                         0.22, 0.39),
-                new Initializer()
+                new BasicInitializer(rand)
         );
 
     }
@@ -73,7 +75,7 @@ public class Presets {
                 new UniformRecombinator(rand),
                 new UncorrelatedSelfAdaptiveNStepsMutator(rand,
                         0.22, 0.39),
-                new Initializer()
+                new BasicInitializer(rand)
         );
 
     }
@@ -95,16 +97,16 @@ public class Presets {
                 new UniformRecombinator(rand),
                 new CorrelatedSelfAdaptiveMutator(rand,
                         1.0, 1.0, 5),
-                new Initializer()
+                new BasicInitializer(rand)
         );
 
     }
 
 
-    public static IslandsAlgorithmSettings basicIslandSettings1(Random rand) {
+    public static IslandsAlgorithmSettings basicIslandSettingsKatsuura1(Random rand) {
 
         return new IslandsAlgorithmSettings(
-                Arrays.asList(100, 10, 10),                        // population sizes
+                Arrays.asList(50, 50, 50),                        // population sizes
                 Arrays.asList(10, 10, calculateNumAlphas(10)),  // Genome Array Sizes
                 Arrays.asList(-5.0, 1E-4, -Math.PI),               // Minimum Limits 
                 Arrays.asList(5.0, 2.5, Math.PI),                  // Maximum Limits
@@ -112,16 +114,45 @@ public class Presets {
                 100,
                 3,
                 2,
-                90,
+                40,
                 2,
                 300,
-                false,
+                5,
+                true,
                 new LinearRankingSelector(rand, 2),
                 new BestKYoungSurvivalSelector(),
                 new UniformRecombinator(rand),
                 new UncorrelatedSelfAdaptiveNStepsMutator(rand,
                         0.22, 0.39),
-                new Initializer()
+                //new BasicInitializer(rand),
+                new ChaoticOppositionBasedInitializer(rand, 550),
+                new CircularMigrator(rand)
+        );
+    }
+
+    public static IslandsAlgorithmSettings basicIslandSettings1(Random rand) {
+
+        return new IslandsAlgorithmSettings(
+                Arrays.asList(50, 50, 50),                        // population sizes
+                Arrays.asList(10, 10, calculateNumAlphas(10)),  // Genome Array Sizes
+                Arrays.asList(-5.0, 1E-4, -Math.PI),               // Minimum Limits 
+                Arrays.asList(5.0, 2.5, Math.PI),                  // Maximum Limits
+                3,
+                25,
+                3,
+                2,
+                40,
+                2,
+                5,
+                3,
+                true,
+                new LinearRankingSelector(rand, 2),
+                new BestKYoungSurvivalSelector(),
+                new UniformRecombinator(rand),
+                new UncorrelatedSelfAdaptiveNStepsMutator(rand,
+                        0.22, 0.39),
+                new BasicInitializer(rand),
+                new CircularMigrator(rand)
         );
     }
 

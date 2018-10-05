@@ -1,24 +1,27 @@
-package charles;
+package charles.initializers;
 
+import charles.Individual;
+import charles.Population;
 import charles.utils.ScaleToRange;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Initializer {
+public class BasicInitializer implements Initializer {
 
     private Random rand;
+
+    public BasicInitializer(Random rand) {
+        this.rand = rand;
+    }
 
     public Population initialize(int numIndividuals,
                                  List<Integer> genomeSizes,
                                  List<Double> minLimits,
-                                 List<Double> maxLimits,
-                                 Random rand) {
+                                 List<Double> maxLimits) {
 
         Population population = new Population();
-        this.rand = rand;
-
 
         for (int i = 0; i < numIndividuals; i++) {
             population.addIndividual(createRandomIndividual(genomeSizes, minLimits, maxLimits));

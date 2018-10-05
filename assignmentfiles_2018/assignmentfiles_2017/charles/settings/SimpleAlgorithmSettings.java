@@ -1,6 +1,6 @@
 package charles.settings;
 
-import charles.Initializer;
+import charles.initializers.BasicInitializer;
 import charles.mutators.Mutator;
 import charles.parentSelectors.ParentSelector;
 import charles.recombinators.Recombinator;
@@ -22,12 +22,12 @@ public class SimpleAlgorithmSettings implements Settings {
     private SurvivalSelector survivalSelector;
     private Recombinator recombinator;
     private Mutator mutator;
-    private Initializer initializer;
+    private BasicInitializer initializer;
 
     public SimpleAlgorithmSettings(int populationSize, List<Integer> genomeArraySizes, List<Double> minLimits,
                                    List<Double> maxLimits, int numCrossover, int numParents, int numChildren,
                                    int maxAge, ParentSelector parentSelector, SurvivalSelector survivalSelector,
-                                   Recombinator recombinator, Mutator mutator, Initializer initializer) {
+                                   Recombinator recombinator, Mutator mutator, BasicInitializer initializer) {
 
         this.populationSize = populationSize;
         this.genomeArraySizes = genomeArraySizes;
@@ -140,11 +140,11 @@ public class SimpleAlgorithmSettings implements Settings {
         this.mutator = mutator;
     }
 
-    public Initializer getInitializer() {
+    public BasicInitializer getInitializer() {
         return initializer;
     }
 
-    public void setInitializer(Initializer initializer) {
+    public void setInitializer(BasicInitializer initializer) {
         this.initializer = initializer;
     }
 }

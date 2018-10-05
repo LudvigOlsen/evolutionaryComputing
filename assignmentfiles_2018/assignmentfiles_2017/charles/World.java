@@ -26,7 +26,7 @@ public class World {
         int numComparisons = 0; // should become same as factorial of islands.size().
         for (int i = 0; i < islands.size() - 1; i++) {
             for (int j = i + 1; j < islands.size(); j++) {
-                diversitySum += islands.get(i).productKullbackLeiblerDivergence(islands.get(j));
+                diversitySum += islands.get(i).absProductKullbackLeiblerDivergence(islands.get(j));
                 numComparisons++;
             }
         }

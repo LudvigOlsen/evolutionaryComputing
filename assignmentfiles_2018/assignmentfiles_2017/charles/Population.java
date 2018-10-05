@@ -26,6 +26,16 @@ public class Population {
         population.remove(index);
     }
 
+    public void deleteIndividual(Individual C) {
+        population.remove(C);
+    }
+
+    public void subtract(Population otherPopulation) {
+        for (Individual individual : otherPopulation.getPopulation()) {
+            deleteIndividual(individual);
+        }
+    }
+
     public void clear() {
         population.clear();
         totalFitnessScore = 0.0;
@@ -72,6 +82,27 @@ public class Population {
         return subpopulation;
     }
 
+    /**
+     * Pops the individuals at the given indices
+     *
+     * @param indices
+     * @return
+     */
+    public Population pullOut(ArrayList<Integer> indices) {
+        Population subpopulation = new Population();
+
+        for (int p = 0; p < getPopulationSize(); p++) {
+            if (indices.contains(p)) {
+                subpopulation.addIndividual(this.population.get(p));
+            }
+        }
+
+        // Delete members of the subpopulation from this.population
+        subtract(subpopulation);
+
+        return subpopulation;
+    }
+
 
     private void calculateTotalFitnessScore() {
         double totalFitnessScore = 0.0;
@@ -111,8 +142,6 @@ public class Population {
             bigDecimalGenomeProduct.add(BigDecimal.valueOf(1.0));
         }
 
-        ArrayList<ArrayList<BigDecimal>> subProducts = new ArrayList<>();
-
         for (int s = 0; s < Math.ceil(getPopulationSize() / (float) numIndividualsAtATime); s++) {
             ArrayList<Integer> indices = new ArrayList<>();
 
@@ -139,7 +168,6 @@ public class Population {
             genomeProduct[gt] = bigDecimalGenomeProduct.get(gt).doubleValue();
         }
 
-        printGenomeArray(genomeProduct);
         this.genomeProduct = genomeProduct;
     }
 
@@ -212,7 +240,7 @@ public class Population {
      * @param otherPopulation A population to find the divergence from.
      * @return Kuhlback Leibler divergence of the genome products of the two populations.
      */
-    public double productKullbackLeiblerDivergence(Population otherPopulation) {
+    public double absProductKullbackLeiblerDivergence(Population otherPopulation) {
         int representationSize = getIndividual(0).getRepresentationSize();
         double[] othersGenomeProduct = otherPopulation.getGenomeProduct();
 
@@ -221,7 +249,7 @@ public class Population {
         for (int gt = 0; gt < representationSize; gt++) {
             summation += Math.log(genomeProduct[gt] / (othersGenomeProduct[gt] + epsilon));
         }
-        return summation / representationSize;
+        return Math.abs(summation / representationSize);
     }
 
 }

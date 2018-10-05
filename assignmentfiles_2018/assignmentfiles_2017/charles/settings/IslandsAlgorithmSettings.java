@@ -1,6 +1,8 @@
 package charles.settings;
 
-import charles.Initializer;
+import charles.initializers.BasicInitializer;
+import charles.initializers.Initializer;
+import charles.migrators.Migrator;
 import charles.mutators.Mutator;
 import charles.parentSelectors.ParentSelector;
 import charles.recombinators.Recombinator;
@@ -22,22 +24,24 @@ public class IslandsAlgorithmSettings implements Settings {
     private int numChildren;
     private int maxAge;
     private int calculateDiversityEvery;
+    private int numMigrants;
     private Boolean usesGlobalization;
     private ParentSelector parentSelector;
     private SurvivalSelector survivalSelector;
     private Recombinator recombinator;
     private Mutator mutator;
     private Initializer initializer;
+    private Migrator migrator;
 
 
     public IslandsAlgorithmSettings(List<Integer> populationSizes, List<Integer> genomeArraySizes,
                                     List<Double> minLimits, List<Double> maxLimits,
                                     int numPopulations, int initialEpochSize,
                                     int numCrossover, int numParents,
-                                    int numChildren, int maxAge, int calculateDiversityEvery,
+                                    int numChildren, int maxAge, int calculateDiversityEvery, int numMigrants,
                                     Boolean usesGlobalization, ParentSelector parentSelector,
                                     SurvivalSelector survivalSelector, Recombinator recombinator,
-                                    Mutator mutator, Initializer initializer) {
+                                    Mutator mutator, Initializer initializer, Migrator migrator) {
         this.populationSizes = populationSizes;
         this.genomeArraySizes = genomeArraySizes;
         this.minLimits = minLimits;
@@ -49,12 +53,22 @@ public class IslandsAlgorithmSettings implements Settings {
         this.numChildren = numChildren;
         this.maxAge = maxAge;
         this.calculateDiversityEvery = calculateDiversityEvery;
+        this.numMigrants = numMigrants;
         this.usesGlobalization = usesGlobalization;
         this.parentSelector = parentSelector;
         this.survivalSelector = survivalSelector;
         this.recombinator = recombinator;
         this.mutator = mutator;
         this.initializer = initializer;
+        this.migrator = migrator;
+    }
+
+    public int getNumMigrants() {
+        return numMigrants;
+    }
+
+    public void setNumMigrants(int numMigrants) {
+        this.numMigrants = numMigrants;
     }
 
     public int getNumCrossover() {
@@ -191,5 +205,13 @@ public class IslandsAlgorithmSettings implements Settings {
 
     public void setCalculateDiversityEvery(int calculateDiversityEvery) {
         this.calculateDiversityEvery = calculateDiversityEvery;
+    }
+
+    public Migrator getMigrator() {
+        return migrator;
+    }
+
+    public void setMigrator(Migrator migrator) {
+        this.migrator = migrator;
     }
 }

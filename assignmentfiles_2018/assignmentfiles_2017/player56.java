@@ -1,9 +1,10 @@
 import charles.Evaluator;
-import charles.Initializer;
 import charles.Population;
 import charles.breeders.Breeder;
 import charles.breeders.IslandBreeder;
 import charles.breeders.SimpleBreeder;
+import charles.initializers.BasicInitializer;
+import charles.initializers.Initializer;
 import charles.settings.IslandsAlgorithmSettings;
 import charles.settings.Presets;
 import charles.settings.SimpleAlgorithmSettings;
@@ -33,9 +34,9 @@ public class player56 implements ContestSubmission {
     private ArrayList<Population> islands;
     private ArrayList<IslandBreeder> islandBreeder;
 
-    private String modelStructure = "divergenceMetric"; // "simple or "islands" or divergenceMetric
+    private String modelStructure = "islands"; // "simple or "islands" or divergenceMetric
     private int showMaxScoreEvery = 500;
-    private Boolean printProgress = true; // TODO Turn off for submissions!
+    private Boolean printProgress = false; // TODO Turn off for submissions!
     private Boolean printDiversity = true; // This is separate from the above. Should still be false for contest submissions.
 
     public player56() {
@@ -103,23 +104,21 @@ public class player56 implements ContestSubmission {
             // TODO Change settings here when islands are implemented
             if (isMultimodal && !hasStructure) {
                 // Katsuura simpleSettings
-                islandsAlgorithmSettings = Presets.basicIslandSettings1(rnd_);
+                islandsAlgorithmSettings = Presets.basicIslandSettingsKatsuura1(rnd_);
                 if (printProgress) System.out.println("Using Katsuura Settings");
-            } else throw new IllegalArgumentException("Currently islands only work for katsuura");
-
-//            else if (isMultimodal) {
-//                // Schaffers simpleSettings
-//                simpleSettings = Presets.NStepUncorrelatedMutationSettings2(rnd_);
-//                if (printProgress) System.out.println("Using Schaffers Settings");
-//            } else if (!hasStructure && !isSeparable) {
-//                // Bent Cigar simpleSettings
-//                simpleSettings = Presets.OneStepUncorrelatedMutationSettings1(rnd_);
-//                if (printProgress) System.out.println("Using BentCigar Settings");
-//            } else if (hasStructure && isSeparable) {
-//                // Sphere simpleSettings
-//                simpleSettings = Presets.OneStepUncorrelatedMutationSettings1(rnd_);
-//                if (printProgress) System.out.println("Using Sphere Settings");
-//            }
+            } else if (isMultimodal) {
+                // Schaffers simpleSettings
+                islandsAlgorithmSettings = Presets.basicIslandSettings1(rnd_);
+                if (printProgress) System.out.println("Using Schaffers Settings");
+            } else if (!hasStructure && !isSeparable) {
+                // Bent Cigar simpleSettings
+                islandsAlgorithmSettings = Presets.basicIslandSettings1(rnd_);
+                if (printProgress) System.out.println("Using BentCigar Settings");
+            } else if (hasStructure && isSeparable) {
+                // Sphere simpleSettings
+                islandsAlgorithmSettings = Presets.basicIslandSettings1(rnd_);
+                if (printProgress) System.out.println("Using Sphere Settings");
+            }
 
         }
 
@@ -135,22 +134,22 @@ public class player56 implements ContestSubmission {
     }
 
     private void testDivergenceMetric() {
-        Initializer initializer = new Initializer();
+        Initializer initializer = new BasicInitializer(rnd_);
         Population populationOne = initializer.initialize(100,
                 Arrays.asList(10, 1), Arrays.asList(-5.0, 0.0), // The extras are not used
-                Arrays.asList(5.0, 1.0), rnd_);
+                Arrays.asList(5.0, 1.0));
 
         Population populationTwo = initializer.initialize(100,
                 Arrays.asList(10, 1), Arrays.asList(-5.0, 0.0), // The extras are not used
-                Arrays.asList(5.0, 1.0), rnd_);
+                Arrays.asList(5.0, 1.0));
 
         populationOne.calculateGenomeProduct(10);
         populationTwo.calculateGenomeProduct(10);
 
-        double divergenceOneTwo = populationOne.productKullbackLeiblerDivergence(populationTwo);
-        double divergenceTwoOne = populationTwo.productKullbackLeiblerDivergence(populationOne);
-        double divergenceOneOne = populationOne.productKullbackLeiblerDivergence(populationOne);
-        double divergenceTwoTwo = populationTwo.productKullbackLeiblerDivergence(populationTwo);
+        double divergenceOneTwo = populationOne.absProductKullbackLeiblerDivergence(populationTwo);
+        double divergenceTwoOne = populationTwo.absProductKullbackLeiblerDivergence(populationOne);
+        double divergenceOneOne = populationOne.absProductKullbackLeiblerDivergence(populationOne);
+        double divergenceTwoTwo = populationTwo.absProductKullbackLeiblerDivergence(populationTwo);
 
         if (printProgress) {
             System.out.print("Divergences (OneTwo, TwoOne, OneOne, TwoTwo): ");
@@ -179,7 +178,7 @@ public class player56 implements ContestSubmission {
         // init population
         Population fullPopulation = initializer.initialize(simpleSettings.getPopulationSize(),
                 simpleSettings.getGenomeArraySizes(), simpleSettings.getMinLimits(),
-                simpleSettings.getMaxLimits(), rnd_);
+                simpleSettings.getMaxLimits());
 
         if (printProgress) fullPopulation.getIndividual(0).printRepresentation();
 
@@ -231,7 +230,7 @@ public class player56 implements ContestSubmission {
 
             islands.add(initializer.initialize(islandsAlgorithmSettings.getPopulationSizes().get(i),
                     islandsAlgorithmSettings.getGenomeArraySizes(), islandsAlgorithmSettings.getMinLimits(),
-                    islandsAlgorithmSettings.getMaxLimits(), rnd_));
+                    islandsAlgorithmSettings.getMaxLimits()));
 
             // Create a breeder for each island. This way they can vary if we want them to.
             islandBreeder.add(new IslandBreeder(islandsAlgorithmSettings.getParentSelector(),
@@ -244,8 +243,6 @@ public class player56 implements ContestSubmission {
             evaluator.evaluate(islands.get(i));
 
         }
-
-        islands.get(0).calculateGenomeProduct(10);
 
         numGenerations++;
 
@@ -280,19 +277,22 @@ public class player56 implements ContestSubmission {
 
             if (numGenerations % islandsAlgorithmSettings.getCalculateDiversityEvery() == 0 && printDiversity) {
                 diversity = calculateInterPopulationDiversity(islands);
-                System.out.print("Diversity: ");
+                System.out.print("Generation: ");
+                System.out.print(numGenerations);
+                System.out.print(" , Diversity: ");
                 System.out.println(diversity);
             }
 
             if (numGenerations % epochSize == 0 && islandsAlgorithmSettings.getUsesGlobalization()) {
-                System.out.println("THIS IS WHERE WE MERGE");
+                if (printProgress) System.out.println("Merging");
+                islandsAlgorithmSettings.getMigrator().migrate(islands, islandsAlgorithmSettings.getNumMigrants());
             }
 
             // Print progress
             progressPrinter(numEvaluations, showMaxScoreEvery, printProgress,
                     evaluator, getAverageFitness(islands));
 
-            numEvaluations = evaluator.getTotalNumEvaluations();
+//            numEvaluations = evaluator.getTotalNumEvaluations();
         }
 
     }
