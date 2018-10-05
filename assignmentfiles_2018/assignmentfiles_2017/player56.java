@@ -20,14 +20,14 @@ public class player56 implements ContestSubmission {
     Evaluator evaluator;
     private int evaluations_limit_;
 
-    private boolean isMultimodal, hasStructure, isSeparable, isRegular;
+    private boolean isMultimodal, isSeparable, hasStructure;
 
     private SimpleAlgorithmSettings simpleSettings;
     private IslandsAlgorithmSettings islandsAlgorithmSettings;
 
-    private String modelStructure = "divergenceMetric"; // Or "islands" or divergenceMetric
+    private String modelStructure = "simple"; // Or "islands" or divergenceMetric
     private int showMaxScoreEvery = 500;
-    private Boolean printProgress = true; // TODO Turn off for submissions!
+    private Boolean printProgress = false; // TODO Turn off for submissions!
 
     public player56() {
         rnd_ = new Random();
@@ -52,7 +52,6 @@ public class player56 implements ContestSubmission {
         isMultimodal = Boolean.parseBoolean(props.getProperty("Multimodal"));
         hasStructure = Boolean.parseBoolean(props.getProperty("Regular"));
         isSeparable = Boolean.parseBoolean(props.getProperty("Separable"));
-        isRegular = Boolean.parseBoolean(props.getProperty("Regular"));
 
 
     }
@@ -73,7 +72,7 @@ public class player56 implements ContestSubmission {
 
         if (modelStructure.equals("simple")) {
             // Get simpleSettings for the current evaluation function
-            if (isMultimodal && !isRegular) {
+            if (isMultimodal && !hasStructure) {
                 // Katsuura simpleSettings
                 simpleSettings = Presets.NStepUncorrelatedMutationSettings1(rnd_);
                 if (printProgress) System.out.println("Using Katsuura Settings");
@@ -81,11 +80,11 @@ public class player56 implements ContestSubmission {
                 // Schaffers simpleSettings
                 simpleSettings = Presets.NStepUncorrelatedMutationSettings2(rnd_);
                 if (printProgress) System.out.println("Using Schaffers Settings");
-            } else if (!isRegular && !isSeparable) {
+            } else if (!hasStructure && !isSeparable) {
                 // Bent Cigar simpleSettings
                 simpleSettings = Presets.OneStepUncorrelatedMutationSettings1(rnd_);
                 if (printProgress) System.out.println("Using BentCigar Settings");
-            } else if (isRegular && isSeparable) {
+            } else if (hasStructure && isSeparable) {
                 // Sphere simpleSettings
                 simpleSettings = Presets.OneStepUncorrelatedMutationSettings1(rnd_);
                 if (printProgress) System.out.println("Using Sphere Settings");
@@ -93,7 +92,7 @@ public class player56 implements ContestSubmission {
         } else if (modelStructure.equals("islands")) {
             // Get islandSettings for the current evaluation function
             // TODO Change settings here when Islands are implemented
-            if (isMultimodal && !isRegular) {
+            if (isMultimodal && !hasStructure) {
                 // Katsuura simpleSettings
                 simpleSettings = Presets.NStepUncorrelatedMutationSettings1(rnd_);
                 if (printProgress) System.out.println("Using Katsuura Settings");
@@ -101,11 +100,11 @@ public class player56 implements ContestSubmission {
                 // Schaffers simpleSettings
                 simpleSettings = Presets.NStepUncorrelatedMutationSettings2(rnd_);
                 if (printProgress) System.out.println("Using Schaffers Settings");
-            } else if (!isRegular && !isSeparable) {
+            } else if (!hasStructure && !isSeparable) {
                 // Bent Cigar simpleSettings
                 simpleSettings = Presets.OneStepUncorrelatedMutationSettings1(rnd_);
                 if (printProgress) System.out.println("Using BentCigar Settings");
-            } else if (isRegular && isSeparable) {
+            } else if (hasStructure && isSeparable) {
                 // Sphere simpleSettings
                 simpleSettings = Presets.OneStepUncorrelatedMutationSettings1(rnd_);
                 if (printProgress) System.out.println("Using Sphere Settings");
