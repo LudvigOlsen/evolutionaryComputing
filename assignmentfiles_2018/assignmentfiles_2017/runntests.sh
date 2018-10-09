@@ -4,6 +4,7 @@ numberOfTests=$2
 fileName=${evaluationType}Results 
 touch Results/$fileName.txt
 echo "Run,Seed,Generation,Diversity,Migrants,Epoch Size,Best Score" > Results/$fileName.txt
+echo "Run,Seed,Final Score" > Results/$fileName"FinalResults".txt
 for ((i=1; i<=$numberOfTests; i++))
 do
     randomSeed=$(( RANDOM % 10000 ))
@@ -15,6 +16,9 @@ do
 
         if [ "${#resultArray[@]}" -le "2" ]
         then
+            finalScore=${resultArray[1]}
+            echo ""$i","$randomSeed","$finalScore"" >> Results/$fileName"FinalResults".txt
+            echo $finalScore
             break
         fi
         
