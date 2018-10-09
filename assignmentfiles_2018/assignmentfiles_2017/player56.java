@@ -19,6 +19,7 @@ import java.util.Random;
 
 import static charles.World.calculateInterPopulationDiversity;
 import static charles.World.getAverageFitness;
+import static charles.utils.Numbers.roundScienceNotationToNDecimals;
 import static charles.utils.Numbers.roundToInt;
 
 public class player56 implements ContestSubmission {
@@ -105,7 +106,7 @@ public class player56 implements ContestSubmission {
             // TODO Change settings here when islands are implemented
             if (isMultimodal && !hasStructure) {
                 // Katsuura simpleSettings
-                islandsAlgorithmSettings = Presets.basicIslandSettingsKatsuuraSteadyMigration(rnd_);
+                islandsAlgorithmSettings = Presets.basicIslandSettingsKatsuuraIncreaseMigration(rnd_);
                 if (printProgress) System.out.println("Using Katsuura Settings");
             } else if (isMultimodal) {
                 // Schaffers simpleSettings
@@ -298,11 +299,13 @@ public class player56 implements ContestSubmission {
                 System.out.print("Generation: ");
                 System.out.print(numGenerations);
                 System.out.print(" , Diversity: ");
-                System.out.print(diversity);
+                System.out.print(roundScienceNotationToNDecimals(diversity, 4));
                 System.out.print(" , # Migrants: ");
                 System.out.print(numMigrationsRounded);
                 System.out.print(" , Epoch size: ");
-                System.out.println(epochSizeRounded);
+                System.out.print(epochSizeRounded);
+                System.out.print(" , Best score so far: ");
+                System.out.println(roundScienceNotationToNDecimals(evaluator.getAlltimeMaxScore(), 4));
             }
 
             if (numGenerations % epochSizeRounded == 0 && islandsAlgorithmSettings.getUsesGlobalization()) {
