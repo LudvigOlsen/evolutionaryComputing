@@ -299,13 +299,13 @@ public class player56 implements ContestSubmission {
                 System.out.print("Generation: ");
                 System.out.print(numGenerations);
                 System.out.print(" , Diversity: ");
-                System.out.print(roundScienceNotationToNDecimals(diversity, 4));
+                System.out.print(roundScienceNotationToNDecimals(diversity, 5));
                 System.out.print(" , # Migrants: ");
                 System.out.print(numMigrationsRounded);
                 System.out.print(" , Epoch size: ");
                 System.out.print(epochSizeRounded);
                 System.out.print(" , Best score so far: ");
-                System.out.println(roundScienceNotationToNDecimals(evaluator.getAlltimeMaxScore(), 4));
+                System.out.println(roundScienceNotationToNDecimals(evaluator.getAlltimeMaxScore(), 5));
             }
 
             if (numGenerations % epochSizeRounded == 0 && islandsAlgorithmSettings.getUsesGlobalization()) {
