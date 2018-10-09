@@ -11,6 +11,7 @@ import java.util.Random;
 public class ChaoticOppositionBasedInitializer implements Initializer {
 
     private Random rand;
+    private int chaosFn;
     private int maxK = 555; // at least 300
 
     /**
@@ -21,6 +22,17 @@ public class ChaoticOppositionBasedInitializer implements Initializer {
         this.rand = rand;
         if (maxK >= 300) this.maxK = maxK;
         else throw new IllegalArgumentException("maxK must be >= 300.");
+    }
+
+
+    private double getChaos() {
+        if (chaosFn == 1) return rand.nextDouble();
+        else if (chaosFn == 2) return chaosFromSineMap();
+        else if (chaosFn == 3) return chaosFromCosineMap();
+        else if (chaosFn == 4) return chaosFromLogisticMap();
+        else if (chaosFn == 5) return chaosFromCubicMap();
+        else
+            throw new IllegalArgumentException("Only have 5 initializers for now, counting from 1. Please use setChaosFn().");
     }
 
     /**
@@ -96,21 +108,77 @@ public class ChaoticOppositionBasedInitializer implements Initializer {
 
         for (int i = 0; i < genomeSize; i++) {
             // Generate genotype
-
-            double chaos = rand.nextDouble();
-
-            for (int k = 0; k < maxK; k++) {
-                //feed random variable to the chaos function
-                chaos = Math.sin(Math.PI * chaos);
-            }
-
             newGenomeArray[i] = ScaleToRange.scaleToRange(
-                    chaos, -1.0,
+                    getChaos(), 0.0,
                     1.0, minLimit, maxLimit);
         }
 
         return newGenomeArray;
     }
 
+    private double chaosFromSineMap() {
+        double chaos = rand.nextDouble();
+
+        double my = 0.99;
+
+        for (int k = 0; k < maxK; k++) {
+            //feed random variable to the chaos function
+            chaos = my * Math.sin(Math.PI * chaos);
+        }
+
+        return chaos;
+
+    }
+
+    private double chaosFromCosineMap() {
+        double chaos = rand.nextDouble();
+
+        double my = 0.99;
+
+        for (int k = 0; k < maxK; k++) {
+            //feed random variable to the chaos function
+            chaos = my * Math.cos(Math.PI * Math.abs(chaos - 0.5));
+        }
+
+        return chaos;
+
+    }
+
+    private double chaosFromLogisticMap() {
+        double chaos = rand.nextDouble();
+
+        double my = 4.0;
+
+        for (int k = 0; k < maxK; k++) {
+            //feed random variable to the chaos function
+            chaos = my * chaos * (1 - chaos);
+        }
+
+        return chaos;
+
+    }
+
+    private double chaosFromCubicMap() {
+        double chaos = rand.nextDouble();
+
+        double my = 2.59;
+
+        for (int k = 0; k < maxK; k++) {
+            //feed random variable to the chaos function
+            chaos = my * chaos * (1 - Math.pow(chaos, 2));
+        }
+
+        return chaos;
+
+    }
+
+
+    public int getChaosFn() {
+        return chaosFn;
+    }
+
+    public void setChaosFn(int chaosFn) {
+        this.chaosFn = chaosFn;
+    }
 }
 

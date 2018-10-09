@@ -224,7 +224,7 @@ public class Population {
 
 
     /**
-     * Calculate the (Product) Kullback Leibler Divergence between populations. (Possibly novel method).
+     * Calculate the absolute (Product) Kullback Leibler Divergence between populations. (Possibly novel method).
      * <p>
      * The product of all individuals in a population,
      * such that for all genome positions g in genome product GP and individual i,
@@ -247,9 +247,9 @@ public class Population {
         double summation = 0;
         double epsilon = 1e-32; // NOTE: This should be relative to the representation size
         for (int gt = 0; gt < representationSize; gt++) {
-            summation += Math.log(genomeProduct[gt] / (othersGenomeProduct[gt] + epsilon));
+            summation += Math.abs(Math.log(genomeProduct[gt] / (othersGenomeProduct[gt] + epsilon)));
         }
-        return Math.abs(summation / representationSize);
+        return summation / representationSize;
     }
 
 }

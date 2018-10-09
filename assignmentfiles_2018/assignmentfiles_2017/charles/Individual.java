@@ -3,7 +3,6 @@ package charles;
 import charles.utils.Numbers;
 import charles.utils.ScaleToRange;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 

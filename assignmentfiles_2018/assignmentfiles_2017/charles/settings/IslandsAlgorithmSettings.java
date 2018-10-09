@@ -1,6 +1,5 @@
 package charles.settings;
 
-import charles.initializers.BasicInitializer;
 import charles.initializers.Initializer;
 import charles.migrators.Migrator;
 import charles.mutators.Mutator;
@@ -17,6 +16,7 @@ public class IslandsAlgorithmSettings implements Settings {
     private List<Integer> genomeArraySizes;
     private List<Double> minLimits;
     private List<Double> maxLimits;
+    private List<Integer> chaosFunctions;
     private int numPopulations;
     private int initialEpochSize;
     private int numCrossover;
@@ -25,6 +25,8 @@ public class IslandsAlgorithmSettings implements Settings {
     private int maxAge;
     private int calculateDiversityEvery;
     private int numMigrants;
+    private double migrationChangeMultiplier;
+    private double epochSizeChangeMultiplier;
     private Boolean usesGlobalization;
     private ParentSelector parentSelector;
     private SurvivalSelector survivalSelector;
@@ -35,10 +37,11 @@ public class IslandsAlgorithmSettings implements Settings {
 
 
     public IslandsAlgorithmSettings(List<Integer> populationSizes, List<Integer> genomeArraySizes,
-                                    List<Double> minLimits, List<Double> maxLimits,
+                                    List<Double> minLimits, List<Double> maxLimits, List<Integer> chaosFunctions,
                                     int numPopulations, int initialEpochSize,
                                     int numCrossover, int numParents,
                                     int numChildren, int maxAge, int calculateDiversityEvery, int numMigrants,
+                                    double migrationChangeMultiplier, double epochSizeChangeMultiplier,
                                     Boolean usesGlobalization, ParentSelector parentSelector,
                                     SurvivalSelector survivalSelector, Recombinator recombinator,
                                     Mutator mutator, Initializer initializer, Migrator migrator) {
@@ -46,6 +49,7 @@ public class IslandsAlgorithmSettings implements Settings {
         this.genomeArraySizes = genomeArraySizes;
         this.minLimits = minLimits;
         this.maxLimits = maxLimits;
+        this.chaosFunctions = chaosFunctions;
         this.numPopulations = numPopulations;
         this.initialEpochSize = initialEpochSize;
         this.numCrossover = numCrossover;
@@ -54,6 +58,8 @@ public class IslandsAlgorithmSettings implements Settings {
         this.maxAge = maxAge;
         this.calculateDiversityEvery = calculateDiversityEvery;
         this.numMigrants = numMigrants;
+        this.migrationChangeMultiplier = migrationChangeMultiplier;
+        this.epochSizeChangeMultiplier = epochSizeChangeMultiplier;
         this.usesGlobalization = usesGlobalization;
         this.parentSelector = parentSelector;
         this.survivalSelector = survivalSelector;
@@ -213,5 +219,29 @@ public class IslandsAlgorithmSettings implements Settings {
 
     public void setMigrator(Migrator migrator) {
         this.migrator = migrator;
+    }
+
+    public double getMigrationChangeMultiplier() {
+        return migrationChangeMultiplier;
+    }
+
+    public void setMigrationChangeMultiplier(double migrationChangeMultiplier) {
+        this.migrationChangeMultiplier = migrationChangeMultiplier;
+    }
+
+    public double getEpochSizeChangeMultiplier() {
+        return epochSizeChangeMultiplier;
+    }
+
+    public void setEpochSizeChangeMultiplier(double epochSizeChangeMultiplier) {
+        this.epochSizeChangeMultiplier = epochSizeChangeMultiplier;
+    }
+
+    public List<Integer> getChaosFunctions() {
+        return chaosFunctions;
+    }
+
+    public void setChaosFunctions(List<Integer> chaosFunctions) {
+        this.chaosFunctions = chaosFunctions;
     }
 }

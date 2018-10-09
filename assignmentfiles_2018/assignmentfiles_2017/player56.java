@@ -19,6 +19,7 @@ import java.util.Random;
 
 import static charles.World.calculateInterPopulationDiversity;
 import static charles.World.getAverageFitness;
+import static charles.utils.Numbers.roundToInt;
 
 public class player56 implements ContestSubmission {
     Random rnd_;
@@ -37,7 +38,7 @@ public class player56 implements ContestSubmission {
     private String modelStructure = "islands"; // "simple or "islands" or divergenceMetric
     private int showMaxScoreEvery = 500;
     private Boolean printProgress = false; // TODO Turn off for submissions!
-    private Boolean printDiversity = false; // This is separate from the above. Should still be false for contest submissions.
+    private Boolean printDiversity = true; // This is separate from the above. Should still be false for contest submissions.
 
     public player56() {
         rnd_ = new Random();
@@ -104,7 +105,7 @@ public class player56 implements ContestSubmission {
             // TODO Change settings here when islands are implemented
             if (isMultimodal && !hasStructure) {
                 // Katsuura simpleSettings
-                islandsAlgorithmSettings = Presets.basicIslandSettingsKatsuura1(rnd_);
+                islandsAlgorithmSettings = Presets.basicIslandSettingsKatsuuraSteadyMigration(rnd_);
                 if (printProgress) System.out.println("Using Katsuura Settings");
             } else if (isMultimodal) {
                 // Schaffers simpleSettings
@@ -217,7 +218,16 @@ public class player56 implements ContestSubmission {
         islandBreeder = new ArrayList<>();
         int numEvaluations = 0;
         int numGenerations = 0;
-        int epochSize = islandsAlgorithmSettings.getInitialEpochSize();
+
+        // We will have the number of migrants as a double, so we 
+        // can keep multiplying it with the migration rate
+        // We then use the rounded version for the current migration
+        double numMigrationsContinuous = (double) islandsAlgorithmSettings.getNumMigrants();
+        int numMigrationsRounded = roundToInt(numMigrationsContinuous);
+
+        double epochSizeContinuous = (double) islandsAlgorithmSettings.getInitialEpochSize();
+        int epochSizeRounded = roundToInt(epochSizeContinuous);
+
         double diversity;
 
         // TODO Create initializer that checks and uses the initializer setting for each island
@@ -228,6 +238,7 @@ public class player56 implements ContestSubmission {
         // Initialize the islands and run initial evaluation
         for (int i = 0; i < islandsAlgorithmSettings.getNumPopulations(); i++) {
 
+            initializer.setChaosFn(islandsAlgorithmSettings.getChaosFunctions().get(i));
             islands.add(initializer.initialize(islandsAlgorithmSettings.getPopulationSizes().get(i),
                     islandsAlgorithmSettings.getGenomeArraySizes(), islandsAlgorithmSettings.getMinLimits(),
                     islandsAlgorithmSettings.getMaxLimits()));
@@ -275,17 +286,28 @@ public class player56 implements ContestSubmission {
 
             numGenerations++;
 
+            // Update migration rate
+            numMigrationsContinuous *= islandsAlgorithmSettings.getMigrationChangeMultiplier();
+            numMigrationsRounded = roundToInt(numMigrationsContinuous);
+
+            epochSizeContinuous *= islandsAlgorithmSettings.getEpochSizeChangeMultiplier();
+            epochSizeRounded = Math.max(1, roundToInt(epochSizeContinuous)); // At least 1
+
             if (numGenerations % islandsAlgorithmSettings.getCalculateDiversityEvery() == 0 && printDiversity) {
                 diversity = calculateInterPopulationDiversity(islands);
                 System.out.print("Generation: ");
                 System.out.print(numGenerations);
                 System.out.print(" , Diversity: ");
-                System.out.println(diversity);
+                System.out.print(diversity);
+                System.out.print(" , # Migrants: ");
+                System.out.print(numMigrationsRounded);
+                System.out.print(" , Epoch size: ");
+                System.out.println(epochSizeRounded);
             }
 
-            if (numGenerations % epochSize == 0 && islandsAlgorithmSettings.getUsesGlobalization()) {
+            if (numGenerations % epochSizeRounded == 0 && islandsAlgorithmSettings.getUsesGlobalization()) {
                 if (printProgress) System.out.println("Merging");
-                islandsAlgorithmSettings.getMigrator().migrate(islands, islandsAlgorithmSettings.getNumMigrants());
+                islandsAlgorithmSettings.getMigrator().migrate(islands, numMigrationsRounded);
             }
 
             // Print progress

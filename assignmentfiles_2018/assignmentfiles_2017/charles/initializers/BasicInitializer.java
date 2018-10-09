@@ -55,4 +55,12 @@ public class BasicInitializer implements Initializer {
 
         return newGenomeArray;
     }
+
+    public void setChaosFn(int chaosFn) {
+        /*
+        Not used in this initializer. Hack to avoid refactoring initiliazers.
+         */
+    }
+
+    ;
 }

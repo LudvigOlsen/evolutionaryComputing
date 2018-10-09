@@ -124,21 +124,54 @@ public class Presets {
     }
 
 
-    public static IslandsAlgorithmSettings basicIslandSettingsKatsuura1(Random rand) {
+    public static IslandsAlgorithmSettings basicIslandSettingsKatsuuraSteadyMigration(Random rand) {
 
         return new IslandsAlgorithmSettings(
-                Arrays.asList(50, 50, 50),                        // population sizes
-                Arrays.asList(10, 10, calculateNumAlphas(10)),  // Genome Array Sizes
-                Arrays.asList(-5.0, 1E-4, -Math.PI),               // Minimum Limits 
-                Arrays.asList(5.0, 2.5, Math.PI),                  // Maximum Limits
-                3,
+                Arrays.asList(15, 15, 15, 15, 15),                      // population sizes
+                Arrays.asList(10, 10, calculateNumAlphas(10)),       // Genome Array Sizes
+                Arrays.asList(-5.0, 1E-4, -Math.PI),                    // Minimum Limits 
+                Arrays.asList(5.0, 2.5, Math.PI),                       // Maximum Limits
+                Arrays.asList(1, 2, 3, 4, 5),                           // Chaos functions for initialization
+                5,
                 100,
                 3,
                 2,
-                40,
+                13,
                 2,
                 300,
+                2,
+                1.0,
+                1.0,
+                true,
+                new LinearRankingSelector(rand, 2),
+                new BestKYoungSurvivalSelector(),
+                new UniformRecombinator(rand),
+                new UncorrelatedSelfAdaptiveNStepsMutator(rand,
+                        0.22, 0.39),
+                //new BasicInitializer(rand),
+                new ChaoticOppositionBasedInitializer(rand, 550),
+                new CircularMigrator(rand)
+        );
+    }
+
+    public static IslandsAlgorithmSettings basicIslandSettingsKatsuuraIncreaseMigration(Random rand) {
+
+        return new IslandsAlgorithmSettings(
+                Arrays.asList(15, 15, 15, 15, 15),                      // population sizes
+                Arrays.asList(10, 10, calculateNumAlphas(10)),       // Genome Array Sizes
+                Arrays.asList(-5.0, 1E-4, -Math.PI),                    // Minimum Limits 
+                Arrays.asList(5.0, 2.5, Math.PI),                       // Maximum Limits
+                Arrays.asList(1, 2, 3, 4, 5),                           // Chaos functions for initialization
                 5,
+                100,
+                3,
+                2,
+                13,
+                2,
+                300,
+                2,
+                1.000125,
+                1 - 0.000125,
                 true,
                 new LinearRankingSelector(rand, 2),
                 new BestKYoungSurvivalSelector(),
@@ -154,18 +187,21 @@ public class Presets {
     public static IslandsAlgorithmSettings basicIslandSettings1(Random rand) {
 
         return new IslandsAlgorithmSettings(
-                Arrays.asList(50, 50, 50),                        // population sizes
+                Arrays.asList(15, 15, 15, 15, 15, 15),             // population sizes
                 Arrays.asList(10, 10, calculateNumAlphas(10)),  // Genome Array Sizes
                 Arrays.asList(-5.0, 1E-4, -Math.PI),               // Minimum Limits 
                 Arrays.asList(5.0, 2.5, Math.PI),                  // Maximum Limits
-                3,
+                Arrays.asList(1, 1, 1, 1, 1, 1),                   // Chaos functions for initialization (1 is uniform random)
+                6,
                 25,
                 3,
                 2,
-                40,
+                13,
                 2,
                 5,
-                3,
+                2,
+                1.0,
+                1.0,
                 true,
                 new LinearRankingSelector(rand, 2),
                 new BestKYoungSurvivalSelector(),
@@ -180,11 +216,12 @@ public class Presets {
     public static IslandsAlgorithmSettings basicIslandSettingsChaosInit1(Random rand) {
 
         return new IslandsAlgorithmSettings(
-                Arrays.asList(50, 50, 50),                        // population sizes
+                Arrays.asList(50, 50, 50, 50),                         // population sizes
                 Arrays.asList(10, 10, calculateNumAlphas(10)),  // Genome Array Sizes
                 Arrays.asList(-5.0, 1E-4, -Math.PI),               // Minimum Limits 
                 Arrays.asList(5.0, 2.5, Math.PI),                  // Maximum Limits
-                3,
+                Arrays.asList(2, 3, 4, 5),                            // Chaos functions for initialization
+                4,
                 25,
                 3,
                 2,
@@ -192,6 +229,8 @@ public class Presets {
                 2,
                 5,
                 3,
+                1.0,
+                1.0,
                 true,
                 new LinearRankingSelector(rand, 2),
                 new BestKYoungSurvivalSelector(),
@@ -206,10 +245,11 @@ public class Presets {
     public static IslandsAlgorithmSettings basicIslandSettingsChaosInit5Islands(Random rand) {
 
         return new IslandsAlgorithmSettings(
-                Arrays.asList(20, 20, 20, 20, 20),                        // population sizes
+                Arrays.asList(20, 20, 20, 20, 20),                 // population sizes
                 Arrays.asList(10, 10, calculateNumAlphas(10)),  // Genome Array Sizes
                 Arrays.asList(-5.0, 1E-4, -Math.PI),               // Minimum Limits 
                 Arrays.asList(5.0, 2.5, Math.PI),                  // Maximum Limits
+                Arrays.asList(1, 2, 3, 4, 5),                   // Chaos functions for initialization
                 5,
                 25,
                 3,
@@ -218,6 +258,8 @@ public class Presets {
                 2,
                 5,
                 2,
+                1.0,
+                1.0,
                 true,
                 new LinearRankingSelector(rand, 2),
                 new BestKYoungSurvivalSelector(),
@@ -231,16 +273,5 @@ public class Presets {
 
 }
 
-/*
-private int populationSize = 100;
-    private List<Integer> genomeArraySizes = Arrays.asList(10, 1); //, calculateNumAlphas(10));
-    private List<Double> minLimits = Arrays.asList(-5.0, 1E-4); //, -Math.PI);
-    private List<Double> maxLimits = Arrays.asList(5.0, 2.5); //, Math.PI);
-    private int numCrossover = 5; // Not used with UniformRecombinator
-    private int numParents = 2;
-    private int numChildren = 90;
-    // private int numSurvivors = populationSize - numChildren;
-    private int maxAge = 2;
- */
 
  
