@@ -106,7 +106,7 @@ public class player56 implements ContestSubmission {
             // TODO Change settings here when islands are implemented
             if (isMultimodal && !hasStructure) {
                 // Katsuura simpleSettings
-                islandsAlgorithmSettings = Presets.basicIslandSettingsKatsuuraIncreaseMigration(rnd_);
+                islandsAlgorithmSettings = Presets.basicIslandSettingsKatsuuraNoMigration(rnd_);
                 if (printProgress) System.out.println("Using Katsuura Settings");
             } else if (isMultimodal) {
                 // Schaffers simpleSettings

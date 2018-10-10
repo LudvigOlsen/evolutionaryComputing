@@ -1,1 +1,0 @@
-Seed,Generation,Diversity,Migrants,Epoch Size,Best Score

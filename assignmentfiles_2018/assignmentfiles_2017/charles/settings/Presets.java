@@ -123,6 +123,40 @@ public class Presets {
 
     }
 
+    
+    /*
+    EXPERIMENT PRESETS :
+     */
+
+    public static IslandsAlgorithmSettings basicIslandSettingsKatsuuraNoMigration(Random rand) {
+
+        return new IslandsAlgorithmSettings(
+                Arrays.asList(15, 15, 15, 15, 15),                      // population sizes
+                Arrays.asList(10, 10, calculateNumAlphas(10)),       // Genome Array Sizes
+                Arrays.asList(-5.0, 1E-4, -Math.PI),                    // Minimum Limits 
+                Arrays.asList(5.0, 2.5, Math.PI),                       // Maximum Limits
+                Arrays.asList(1, 2, 3, 4, 5),                           // Chaos functions for initialization
+                5,
+                0,
+                3,
+                2,
+                13,
+                2,
+                300,
+                0,
+                1.0,
+                1.0,
+                false,
+                new LinearRankingSelector(rand, 2),
+                new BestKYoungSurvivalSelector(),
+                new UniformRecombinator(rand),
+                new UncorrelatedSelfAdaptiveNStepsMutator(rand,
+                        0.22, 0.39),
+                //new BasicInitializer(rand),
+                new ChaoticOppositionBasedInitializer(rand, 550),
+                new CircularMigrator(rand)
+        );
+    }
 
     public static IslandsAlgorithmSettings basicIslandSettingsKatsuuraSteadyMigration(Random rand) {
 
@@ -139,7 +173,7 @@ public class Presets {
                 13,
                 2,
                 300,
-                2,
+                5,
                 1.0,
                 1.0,
                 true,
@@ -154,7 +188,7 @@ public class Presets {
         );
     }
 
-    public static IslandsAlgorithmSettings basicIslandSettingsKatsuuraIncreaseMigration(Random rand) {
+    public static IslandsAlgorithmSettings basicIslandSettingsKatsuuraIncreaseMigrationBoth(Random rand) {
 
         return new IslandsAlgorithmSettings(
                 Arrays.asList(15, 15, 15, 15, 15),                      // population sizes
@@ -183,6 +217,72 @@ public class Presets {
                 new CircularMigrator(rand)
         );
     }
+
+    public static IslandsAlgorithmSettings basicIslandSettingsKatsuuraIncreaseMigrationMigrants(Random rand) {
+
+        return new IslandsAlgorithmSettings(
+                Arrays.asList(15, 15, 15, 15, 15),                      // population sizes
+                Arrays.asList(10, 10, calculateNumAlphas(10)),       // Genome Array Sizes
+                Arrays.asList(-5.0, 1E-4, -Math.PI),                    // Minimum Limits 
+                Arrays.asList(5.0, 2.5, Math.PI),                       // Maximum Limits
+                Arrays.asList(1, 2, 3, 4, 5),                           // Chaos functions for initialization
+                5,
+                100,
+                3,
+                2,
+                13,
+                2,
+                300,
+                2,
+                1.0,
+                1 - 0.000125,
+                true,
+                new LinearRankingSelector(rand, 2),
+                new BestKYoungSurvivalSelector(),
+                new UniformRecombinator(rand),
+                new UncorrelatedSelfAdaptiveNStepsMutator(rand,
+                        0.22, 0.39),
+                //new BasicInitializer(rand),
+                new ChaoticOppositionBasedInitializer(rand, 550),
+                new CircularMigrator(rand)
+        );
+    }
+
+    public static IslandsAlgorithmSettings basicIslandSettingsKatsuuraIncreaseMigrationFrequency(Random rand) {
+
+        return new IslandsAlgorithmSettings(
+                Arrays.asList(15, 15, 15, 15, 15),                      // population sizes
+                Arrays.asList(10, 10, calculateNumAlphas(10)),       // Genome Array Sizes
+                Arrays.asList(-5.0, 1E-4, -Math.PI),                    // Minimum Limits 
+                Arrays.asList(5.0, 2.5, Math.PI),                       // Maximum Limits
+                Arrays.asList(1, 2, 3, 4, 5),                           // Chaos functions for initialization
+                5,
+                100,
+                3,
+                2,
+                13,
+                2,
+                300,
+                2,
+                1.000125,
+                1.0,
+                true,
+                new LinearRankingSelector(rand, 2),
+                new BestKYoungSurvivalSelector(),
+                new UniformRecombinator(rand),
+                new UncorrelatedSelfAdaptiveNStepsMutator(rand,
+                        0.22, 0.39),
+                //new BasicInitializer(rand),
+                new ChaoticOppositionBasedInitializer(rand, 550),
+                new CircularMigrator(rand)
+        );
+    }
+
+
+    /*
+    EXPERIMENT PRESETS DONE!
+     */
+
 
     public static IslandsAlgorithmSettings basicIslandSettings1(Random rand) {
 
