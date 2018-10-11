@@ -17,8 +17,7 @@ import java.util.Arrays;
 import java.util.Properties;
 import java.util.Random;
 
-import static charles.World.calculateInterPopulationDiversity;
-import static charles.World.getAverageFitness;
+import static charles.World.*;
 import static charles.utils.Numbers.roundScienceNotationToNDecimals;
 import static charles.utils.Numbers.roundToInt;
 
@@ -229,7 +228,10 @@ public class player56 implements ContestSubmission {
         double epochSizeContinuous = (double) islandsAlgorithmSettings.getInitialEpochSize();
         int epochSizeRounded = roundToInt(epochSizeContinuous);
 
-        double diversity;
+        double interPopulationDiversity;
+        double globalDiversity;
+        double averageGlobalFitness;
+        ArrayList<Double> islandsAverageFitnesses = new ArrayList<>();
 
         // TODO Create initializer that checks and uses the initializer setting for each island
         // TODO Create islands breeder
@@ -294,18 +296,42 @@ public class player56 implements ContestSubmission {
             epochSizeContinuous *= islandsAlgorithmSettings.getEpochSizeChangeMultiplier();
             epochSizeRounded = Math.max(1, roundToInt(epochSizeContinuous)); // At least 1
 
-            if (numGenerations % islandsAlgorithmSettings.getCalculateDiversityEvery() == 0 && printDiversity) {
-                diversity = calculateInterPopulationDiversity(islands);
+            if ((numGenerations == 0 || numGenerations % islandsAlgorithmSettings.getCalculateDiversityEvery() == 0) && printDiversity) {
+
+                // Calculate diversities
+                interPopulationDiversity = calculateInterPopulationDiversity(islands);
+                globalDiversity = calculateGlobalStdDiversity(islands);
+
+                // Calculate fitnesses
+                averageGlobalFitness = calculateAverageGlobalFitness(islands);
+
+                islandsAverageFitnesses.clear();
+                for (Population island : islands) {
+                    islandsAverageFitnesses.add(island.getAverageFitnessScore());
+                }
+
+                // Print progress
                 System.out.print("Generation: ");
                 System.out.print(numGenerations);
-                System.out.print(" , Diversity: ");
-                System.out.print(roundScienceNotationToNDecimals(diversity, 5));
+                System.out.print(" , Inter-Island Diversity: ");
+                System.out.print(roundScienceNotationToNDecimals(interPopulationDiversity, 5));
+                System.out.print(" , Global Diversity: ");
+                System.out.print(roundScienceNotationToNDecimals(globalDiversity, 5));
                 System.out.print(" , # Migrants: ");
                 System.out.print(numMigrationsRounded);
                 System.out.print(" , Epoch size: ");
                 System.out.print(epochSizeRounded);
                 System.out.print(" , Best score so far: ");
-                System.out.println(roundScienceNotationToNDecimals(evaluator.getAlltimeMaxScore(), 5));
+                System.out.print(roundScienceNotationToNDecimals(evaluator.getAlltimeMaxScore(), 5));
+                System.out.print(" , Avg Global Fitness: ");
+                System.out.print(roundScienceNotationToNDecimals(averageGlobalFitness, 5));
+                for (int f = 0; f < islandsAverageFitnesses.size(); f++) {
+                    System.out.print(" Island ");
+                    System.out.print(f);
+                    System.out.print(": ");
+                    System.out.print(roundScienceNotationToNDecimals(islandsAverageFitnesses.get(f), 5));
+                }
+                System.out.println();
             }
 
             if (numGenerations % epochSizeRounded == 0 && islandsAlgorithmSettings.getUsesGlobalization()) {

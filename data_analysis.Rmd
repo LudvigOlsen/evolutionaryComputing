@@ -107,6 +107,16 @@ data_results_no_migration <- read.csv(paste0(data_path, "KatsuuraEvaluationResul
 
 ```
 
+### Testing stuff
+
+```{r}
+
+data_timeseries_no_migration_test <- read.csv(
+  paste0(data_path, "KatsuuraEvaluationResultsNoMigrationTestRun.txt")) %>% 
+  mutate(condition = "no_migration",
+         migration_direction = "none")
+
+```
 
 
 
@@ -143,18 +153,26 @@ data_results_combined <- data_results_increasing_both %>%
 
 ```{r}
 
-# Diversity
+# Inter-island Diversity
 
 data_timeseries_combined %>% 
-  ggplot(aes(Generation, Diversity, color = pretty_condition_space)) +
+  ggplot(aes(Generation, InterIsland.Diversity, color = pretty_condition_space)) +
   geom_smooth() + 
-  labs(title="Diversity over time") + 
+  labs(y="Inter-island diversity",title="Inter-island diversity over time") + 
   theme_bw()
+
+# Global diversity
+data_timeseries_combined %>% 
+  ggplot(aes(Generation, Global.Diversity, color = pretty_condition_space)) +
+  geom_smooth() + 
+  labs(y="Global diversity",title="Global diversity over time\nAverage Std. of genes across all individuals") + 
+  theme_bw()
+
 
 # Best score so far
 
 data_timeseries_combined %>% 
-  ggplot(aes(Generation, Best.Score, color = pretty_condition_space)) +
+  ggplot(aes(Generation, Best.Score.So.Far, color = pretty_condition_space)) +
   geom_smooth() + 
   labs(y = "Best score so far", title="Best score over time") + 
   theme_bw()
@@ -205,10 +223,68 @@ data_results_combined %>%
 lm(Final.Score~condition, data=data_results_combined) %>% 
   summary()
 
-lm(Final.Score~condition, data=data_results_combined) %>% 
-  summary()
 ```
 
+
+### Testing
+
+```{r}
+# Best score so far
+
+data_timeseries_no_migration_test %>% 
+  ggplot(aes(Generation, Avg.Global.Fitness)) +
+  geom_smooth() + 
+  labs(y = "Global average fitness", title="The average fitness of all individuals") + 
+  theme_bw()
+```
+
+Best island? Would maybe say something about initialization?
+```{r}
+data_best_island_no_migration_test <- data_timeseries_no_migration_test %>% 
+  select(c(Run, Generation, condition, Island0, Island1, Island2, Island3, Island4)) %>% 
+  gather(Island, AvgIslandFitness, 4:8) %>% 
+  mutate(is_last_measurement = if_else(Generation == max(Generation), 1, 0)) %>% 
+  group_by(Run, Island) %>% 
+  mutate(is_max_avg_fitness = if_else(AvgIslandFitness == max(AvgIslandFitness), 1,0))
+  
+data_best_island_no_migration_test %>% 
+  ggplot(aes(Generation, AvgIslandFitness, color=Island)) +
+  geom_smooth() + 
+  labs(y = "Average fitness", title="Average Fitness per Island with No Migration") + 
+  theme_bw()
+
+
+data_best_island_no_migration_test %>% 
+  filter(is_last_measurement == 1) %>% 
+  ggplot(aes(Island, AvgIslandFitness, color=condition)) +
+  geom_boxplot() + 
+  labs(y = "Average fitness", title="Average Fitness per Island with No Migration") + 
+  theme_bw()
+
+data_best_island_no_migration_test %>% 
+  filter(is_last_measurement == 1) %>% 
+  arrange(Run, desc(AvgIslandFitness)) %>% 
+  group_by(Run) %>% 
+  mutate(Rank = factor(1:n())) %>% 
+  ggplot(aes(Rank, AvgIslandFitness, color=condition)) +
+  geom_boxplot() + 
+  labs(x = "Ranked Islands", y = "Final Average fitness", 
+       title="Final Average Fitness per Ranked Island with No Migration") + 
+  theme_bw()
+
+data_best_island_no_migration_test %>% 
+  filter(is_max_avg_fitness == 1) %>% 
+  arrange(Run, desc(AvgIslandFitness)) %>% 
+  group_by(Run) %>% 
+  mutate(Rank = factor(1:n())) %>% 
+  ggplot(aes(Rank, AvgIslandFitness, color=condition)) +
+  geom_boxplot() + 
+  labs(x = "Ranked Islands",y = "Max. Average fitness", 
+       title="Max. Average Fitness per Ranked Island with No Migration") + 
+  theme_bw()
+
+
+```
 
 
 
