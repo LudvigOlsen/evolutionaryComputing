@@ -105,7 +105,7 @@ public class player56 implements ContestSubmission {
             // TODO Change settings here when islands are implemented
             if (isMultimodal && !hasStructure) {
                 // Katsuura simpleSettings
-                islandsAlgorithmSettings = Presets.basicIslandSettingsKatsuuraNoMigration(rnd_);
+                islandsAlgorithmSettings = Presets.basicIslandSettingsKatsuuraIncreaseMigrationFrequency(rnd_);
                 if (printProgress) System.out.println("Using Katsuura Settings");
             } else if (isMultimodal) {
                 // Schaffers simpleSettings
@@ -296,7 +296,7 @@ public class player56 implements ContestSubmission {
             epochSizeContinuous *= islandsAlgorithmSettings.getEpochSizeChangeMultiplier();
             epochSizeRounded = Math.max(1, roundToInt(epochSizeContinuous)); // At least 1
 
-            if ((numGenerations == 0 || numGenerations % islandsAlgorithmSettings.getCalculateDiversityEvery() == 0) && printDiversity) {
+            if ((numGenerations == 1 || numGenerations % islandsAlgorithmSettings.getCalculateDiversityEvery() == 0) && printDiversity) {
 
                 // Calculate diversities
                 interPopulationDiversity = calculateInterPopulationDiversity(islands);

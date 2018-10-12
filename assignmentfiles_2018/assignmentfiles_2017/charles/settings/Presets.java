@@ -173,7 +173,7 @@ public class Presets {
                 13,
                 2,
                 150,
-                5,
+                2,
                 1.0,
                 1.0,
                 true,

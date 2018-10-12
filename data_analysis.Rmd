@@ -18,6 +18,24 @@ data_path <- "results_data/"
 
 ```
 
+How to save high resolution images:
+```{r}
+
+standard_width = 5
+standard_height = 4
+standard_res = 300
+
+# Testing tiff_saver
+# tiff("x.tiff", units="in", width=5, height=4, res=300)
+# data.frame("x"=c(1,2,3,4,5), "y"=c(2,4,6,8,10)) %>% 
+#   ggplot(aes(x,y)) +
+#   geom_line()
+# dev.off()
+  
+
+```
+
+
 ## Load data
 
 ### Condition: Increasing both
@@ -26,12 +44,12 @@ In this condition the number of migrants go up over time, while the epoch size b
 
 ```{r}
 data_timeseries_increasing_both <- read.csv(paste0(data_path, "KatsuuraEvaluationResultsIncreasingMigrationBoth.txt")) %>% 
-  mutate(condition = "increasing_both",
-         migration_direction = "increasing") 
+  mutate(condition = "Increasing_both",
+         migration_direction = "Increasing") 
 
 data_results_increasing_both <- read.csv(paste0(data_path, "KatsuuraEvaluationResultsFinalResultsIncreasingMigrationBoth.txt")) %>% 
-  mutate(condition = "increasing_both",
-         migration_direction = "increasing")
+  mutate(condition = "Increasing_both",
+         migration_direction = "Increasing")
 
 ```
 
@@ -41,25 +59,25 @@ Increase the number of individuals that migrate after each epoch.
 
 ```{r}
 data_timeseries_increasing_migrants <- read.csv(paste0(data_path, "KatsuuraEvaluationResultsIncreasingMigrationMigrants.txt")) %>% 
-  mutate(condition = "increasing_migrants",
-         migration_direction = "increasing")
+  mutate(condition = "Increasing_migrants",
+         migration_direction = "Increasing")
 
 data_results_increasing_migrants <- read.csv(paste0(data_path, "KatsuuraEvaluationResultsFinalResultsIncreasingMigrationMigrants.txt")) %>% 
-  mutate(condition = "increasing_migrants",
-         migration_direction = "increasing")
+  mutate(condition = "Increasing_migrants",
+         migration_direction = "Increasing")
 
 ```
 
 ### Condition: Increasing the frequency of migrations
 
 ```{r}
-data_timeseries_increasing_frequency <- read.csv(paste0(data_path, "KatsuuraEvaluationResultsIncreasingMigrationFitness.txt")) %>% 
-  mutate(condition = "increasing_frequency",
-         migration_direction = "increasing")
+data_timeseries_increasing_frequency <- read.csv(paste0(data_path, "KatsuuraEvaluationResultsIncreasingMigrationFrequency.txt")) %>% 
+  mutate(condition = "Increasing_frequency",
+         migration_direction = "Increasing")
 
-data_results_increasing_frequency <- read.csv(paste0(data_path, "KatsuuraEvaluationResultsFinalResultsIncreasingMigrationFitness.txt")) %>% 
-  mutate(condition = "increasing_frequency",
-         migration_direction = "increasing")
+data_results_increasing_frequency <- read.csv(paste0(data_path, "KatsuuraEvaluationResultsFinalResultsIncreasingMigrationFrequency.txt")) %>% 
+  mutate(condition = "Increasing_frequency",
+         migration_direction = "Increasing")
 
 ```
 
@@ -67,12 +85,12 @@ data_results_increasing_frequency <- read.csv(paste0(data_path, "KatsuuraEvaluat
 
 ```{r}
 data_timeseries_steady_migration_2_migrants <- read.csv(paste0(data_path, "KatsuuraEvaluationResultsSteadyMigration2Migrants.txt")) %>% 
-  mutate(condition = "steady_migration_2",
-         migration_direction = "steady")
+  mutate(condition = "Steady_migration_2",
+         migration_direction = "Steady")
 
 data_results_steady_migration_2_migrants <- read.csv(paste0(data_path, "KatsuuraEvaluationResultsFinalResultsSteadyMigration2Migrants.txt")) %>% 
-  mutate(condition = "steady_migration_2",
-         migration_direction = "steady")
+  mutate(condition = "Steady_migration_2",
+         migration_direction = "Steady")
 
 
 ```
@@ -82,12 +100,12 @@ data_results_steady_migration_2_migrants <- read.csv(paste0(data_path, "Katsuura
 
 ```{r}
 data_timeseries_steady_migration_5_migrants <- read.csv(paste0(data_path, "KatsuuraEvaluationResultsSteadyMigration5Migrants.txt")) %>% 
-  mutate(condition = "steady_migration_5",
-         migration_direction = "steady")
+  mutate(condition = "Steady_migration_5",
+         migration_direction = "Steady")
 
 data_results_steady_migration_5_migrants <- read.csv(paste0(data_path, "KatsuuraEvaluationResultsFinalResultsSteadyMigration5Migrants.txt")) %>% 
-  mutate(condition = "steady_migration_5",
-         migration_direction = "steady")
+  mutate(condition = "Steady_migration_5",
+         migration_direction = "Steady")
 
 
 ```
@@ -97,12 +115,12 @@ data_results_steady_migration_5_migrants <- read.csv(paste0(data_path, "Katsuura
 
 ```{r}
 data_timeseries_no_migration <- read.csv(paste0(data_path, "KatsuuraEvaluationResultsNoMigration.txt")) %>% 
-  mutate(condition = "no_migration",
-         migration_direction = "none")
+  mutate(condition = "No_migration",
+         migration_direction = "None")
 
 data_results_no_migration <- read.csv(paste0(data_path, "KatsuuraEvaluationResultsFinalResultsNoMigration.txt")) %>% 
-  mutate(condition = "no_migration",
-         migration_direction = "none")
+  mutate(condition = "No_migration",
+         migration_direction = "None")
 
 
 ```
@@ -111,10 +129,18 @@ data_results_no_migration <- read.csv(paste0(data_path, "KatsuuraEvaluationResul
 
 ```{r}
 
-data_timeseries_no_migration_test <- read.csv(
-  paste0(data_path, "KatsuuraEvaluationResultsNoMigrationTestRun.txt")) %>% 
-  mutate(condition = "no_migration",
-         migration_direction = "none")
+# data_timeseries_no_migration_test <- read.csv(
+#   paste0(data_path, "KatsuuraEvaluationResultsNoMigration.txt")) %>% 
+#   mutate(condition = "no_migration",
+#          migration_direction = "none")
+# 
+# data_timeseries_steady_migration_5_test <- read.csv(
+#   paste0(data_path, "KatsuuraEvaluationResultsSteadyMigration5Migrants.txt")) %>% 
+#   mutate(condition = "steady_migration_5",
+#          migration_direction = "steady")
+# 
+# data_timeseries_combined_test <- data_timeseries_no_migration_test %>% 
+#   bind_rows(data_timeseries_steady_migration_5_test)
 
 ```
 
@@ -130,7 +156,10 @@ data_timeseries_combined <- data_timeseries_increasing_both %>%
             data_timeseries_steady_migration_5_migrants,
             data_timeseries_no_migration) %>% 
   mutate(pretty_condition_newline = str_replace_all(condition, "_", "\n"),
-         pretty_condition_space = str_replace_all(condition, "_", " "))
+         pretty_condition_space = str_replace_all(condition, "_", " ")) %>% 
+  group_by(condition, Run) %>% 
+  mutate(is_last_measurement = if_else(Generation == max(Generation), 1, 0)) %>% 
+  ungroup()
 
 
 data_results_combined <- data_results_increasing_both %>% 
@@ -153,61 +182,73 @@ data_results_combined <- data_results_increasing_both %>%
 
 ```{r}
 
-# Inter-island Diversity
+# Interisland Diversity
 
+tiff("average_interisland_diversity_over_time.tiff", units="in", width=standard_width, height=standard_height, res=standard_res)
 data_timeseries_combined %>% 
   ggplot(aes(Generation, InterIsland.Diversity, color = pretty_condition_space)) +
   geom_smooth() + 
-  labs(y="Inter-island diversity",title="Inter-island diversity over time") + 
+  labs(y="Average interisland diversity",title="Average interisland diversity over time") + 
   theme_bw()
+dev.off()
 
 # Global diversity
+
+tiff("global_diversity_over_time.tiff", units="in", width=standard_width, height=standard_height, res=standard_res)
 data_timeseries_combined %>% 
   ggplot(aes(Generation, Global.Diversity, color = pretty_condition_space)) +
   geom_smooth() + 
-  labs(y="Global diversity",title="Global diversity over time\nAverage Std. of genes across all individuals") + 
+  labs(y="Global diversity",title="Global diversity over time\nAverage standard deviation of each gene\nacross all individuals") + 
   theme_bw()
-
+dev.off()
 
 # Best score so far
 
+tiff("best_fitness_so_far_over_time.tiff", units="in", width=standard_width, height=standard_height, res=standard_res)
 data_timeseries_combined %>% 
   ggplot(aes(Generation, Best.Score.So.Far, color = pretty_condition_space)) +
   geom_smooth() + 
-  labs(y = "Best score so far", title="Best score over time") + 
+  labs(y = "Best fitness so far", title="Best fitness so far over time") + 
   theme_bw()
+dev.off()
 
 # Number of migrants over time
 
+tiff("migrants_over_time.tiff", units="in", width=standard_width, height=standard_height, res=standard_res)
 data_timeseries_combined %>% 
-  filter(condition == "increasing_both") %>% 
+  filter(condition == "Increasing_both") %>% 
   ggplot(aes(Generation, Migrants)) +
   geom_smooth() + 
   labs(title="Number of migrants over time") + 
   theme_bw()
+dev.off()
 
 # Epoch sizes over time
 
+tiff("epoch_size_over_time.tiff", units="in", width=standard_width, height=standard_height, res=standard_res)
 data_timeseries_combined %>% 
-  filter(condition == "increasing_both") %>% 
+  filter(condition == "Increasing_both") %>% 
   ggplot(aes(Generation, Epoch.Size)) +
   geom_smooth() + 
-  labs(title="Epoch size over time") + 
+  labs(y="Epoch Size",title="Epoch size over time") + 
   theme_bw()
+dev.off()
 ```
 
-### Results
+### Final fitness
 
 ```{r}
 
 # Box plot of results
 
+tiff("final_fitness_per_condition.tiff", units="in", width=standard_width*1.2, height=standard_height*1.2, res=standard_res)
 data_results_combined %>% 
   ggplot(aes(pretty_condition_newline, Final.Score, color = migration_direction)) +
   geom_boxplot()  + 
   #geom_violin() +
-  labs(x="Condition", y="Fitness") +
-  theme_bw()
+  labs(x="Condition", y="Fitness", color="Migration Rate") +
+  theme_bw() 
+dev.off()
 ```
 
 Analysis of final results:
@@ -226,62 +267,82 @@ lm(Final.Score~condition, data=data_results_combined) %>%
 ```
 
 
-### Testing
+### Final average global fitness
 
 ```{r}
-# Best score so far
 
-data_timeseries_no_migration_test %>% 
-  ggplot(aes(Generation, Avg.Global.Fitness)) +
+# Average global fitness over time
+
+tiff("global_average_fitness_over_time.tiff", units="in", width=standard_width, height=standard_height, res=standard_res)
+data_timeseries_combined %>% 
+  ggplot(aes(Generation, Avg.Global.Fitness, color=condition)) +
   geom_smooth() + 
-  labs(y = "Global average fitness", title="The average fitness of all individuals") + 
+  labs(y = "Global average fitness", title="The average fitness of all individuals over time") + 
   theme_bw()
+dev.off()
+
+# Linear model of avg global fitness by condition
+lm(Avg.Global.Fitness~condition, 
+   data = data_timeseries_combined %>% 
+     filter(is_last_measurement == 1)) %>% 
+  summary()
+
 ```
+
+### Ranked Islands
 
 Best island? Would maybe say something about initialization?
 ```{r}
-data_best_island_no_migration_test <- data_timeseries_no_migration_test %>% 
-  select(c(Run, Generation, condition, Island0, Island1, Island2, Island3, Island4)) %>% 
+data_timeseries_best_island_combined <- data_timeseries_combined %>% 
+  select(c(Run, Generation, condition, Island0, Island1, Island2, Island3, Island4, is_last_measurement, migration_direction, pretty_condition_space, pretty_condition_newline)) %>% 
   gather(Island, AvgIslandFitness, 4:8) %>% 
-  mutate(is_last_measurement = if_else(Generation == max(Generation), 1, 0)) %>% 
-  group_by(Run, Island) %>% 
-  mutate(is_max_avg_fitness = if_else(AvgIslandFitness == max(AvgIslandFitness), 1,0))
+  mutate(Island = factor(str_replace_all(Island, "Island", ""))) %>% 
+  group_by(condition, Run, Island) %>% 
+  mutate(is_max_avg_fitness = if_else(AvgIslandFitness == max(AvgIslandFitness), 1,0)) %>% 
+  ungroup()
   
-data_best_island_no_migration_test %>% 
-  ggplot(aes(Generation, AvgIslandFitness, color=Island)) +
-  geom_smooth() + 
-  labs(y = "Average fitness", title="Average Fitness per Island with No Migration") + 
-  theme_bw()
+# data_timeseries_best_island_combined %>% 
+#   ggplot(aes(Generation, AvgIslandFitness, color=Island, fill=condition)) +
+#   geom_smooth() + 
+#   labs(y = "Average fitness", title="Average Fitness per Island with No Migration") + 
+#   theme_bw()
 
-
-data_best_island_no_migration_test %>% 
+tiff("average_fitness_per_island.tiff", units="in", width=standard_width, height=standard_height, res=standard_res)
+data_timeseries_best_island_combined %>% 
   filter(is_last_measurement == 1) %>% 
-  ggplot(aes(Island, AvgIslandFitness, color=condition)) +
+  ggplot(aes(Island, AvgIslandFitness, color=pretty_condition_space)) +
   geom_boxplot() + 
-  labs(y = "Average fitness", title="Average Fitness per Island with No Migration") + 
+  labs(y = "Average fitness", title="Average Fitness per Island") + 
   theme_bw()
+dev.off()
 
-data_best_island_no_migration_test %>% 
+tiff("final_average_fitness_per_ranked_island.tiff", units="in", width=standard_width, height=standard_height, res=standard_res)
+data_timeseries_best_island_combined %>% 
   filter(is_last_measurement == 1) %>% 
-  arrange(Run, desc(AvgIslandFitness)) %>% 
-  group_by(Run) %>% 
+  arrange(condition, Run, desc(AvgIslandFitness)) %>% 
+  group_by(condition, Run) %>% 
   mutate(Rank = factor(1:n())) %>% 
-  ggplot(aes(Rank, AvgIslandFitness, color=condition)) +
+  ggplot(aes(Rank, AvgIslandFitness, color=migration_direction)) +
   geom_boxplot() + 
-  labs(x = "Ranked Islands", y = "Final Average fitness", 
-       title="Final Average Fitness per Ranked Island with No Migration") + 
+  labs(x = "Ranked Islands", y = "Final Average Fitness", 
+       title="Final Average Fitness per Ranked Island",
+       color="Migration Rate") + 
   theme_bw()
+dev.off()
 
-data_best_island_no_migration_test %>% 
+tiff("max_average_fitness_per_ranked_island.tiff", units="in", width=standard_width, height=standard_height, res=standard_res)
+data_timeseries_best_island_combined %>% 
   filter(is_max_avg_fitness == 1) %>% 
-  arrange(Run, desc(AvgIslandFitness)) %>% 
-  group_by(Run) %>% 
+  arrange(condition, Run, desc(AvgIslandFitness)) %>% 
+  group_by(condition, Run) %>% 
   mutate(Rank = factor(1:n())) %>% 
-  ggplot(aes(Rank, AvgIslandFitness, color=condition)) +
+  ggplot(aes(Rank, AvgIslandFitness, color=migration_direction)) +
   geom_boxplot() + 
   labs(x = "Ranked Islands",y = "Max. Average fitness", 
-       title="Max. Average Fitness per Ranked Island with No Migration") + 
+       title="Max. Average Fitness per Ranked Island",
+       color="Migration Rate") + 
   theme_bw()
+dev.off()
 
 
 ```
