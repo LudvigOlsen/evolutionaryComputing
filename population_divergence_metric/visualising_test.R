@@ -27,7 +27,8 @@ divergence_simulation_data_exp1_processed <- divergence_simulation_data_exp1 %>%
   select(-X)
 
 # Plot
-tiff("Experiment_One_Divergence_of_differently_biased_populations_small.tiff", units="in", width=5, height=4, res=300)
+tiff("Experiment_One_Divergence_of_differently_biased_populations_small.tiff", 
+     units="in", width=5, height=2.5, res=300)
 
 divergence_simulation_data_exp1_processed %>%
   ggplot(aes(bias_difference, divergence)) +
@@ -49,7 +50,7 @@ divergence_simulation_data_exp2_processed <- divergence_simulation_data_exp2 %>%
 
 # Plot
 
-tiff("Experiment_two_pairwise_comparison_small.tiff", units="in", width=5, height=4, res=300)
+tiff("Experiment_two_pairwise_comparison_small.tiff", units="in", width=5, height=2.5, res=300)
 
 divergence_simulation_data_exp2_processed %>%
   ggplot(aes(bias_1_first, divergence)) +

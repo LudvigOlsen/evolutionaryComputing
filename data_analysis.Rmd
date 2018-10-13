@@ -184,7 +184,7 @@ data_results_combined <- data_results_increasing_both %>%
 
 # Interisland Diversity
 
-tiff("average_interisland_diversity_over_time.tiff", units="in", width=standard_width, height=standard_height, res=standard_res)
+tiff("average_interisland_diversity_over_time.tiff", units="in", width=standard_width, height=standard_height*0.7, res=standard_res)
 data_timeseries_combined %>% 
   ggplot(aes(Generation, InterIsland.Diversity, color = pretty_condition_space)) +
   geom_smooth() + 
@@ -194,7 +194,7 @@ dev.off()
 
 # Global diversity
 
-tiff("global_diversity_over_time.tiff", units="in", width=standard_width, height=standard_height, res=standard_res)
+tiff("global_diversity_over_time.tiff", units="in", width=standard_width, height=standard_height*0.7, res=standard_res)
 data_timeseries_combined %>% 
   ggplot(aes(Generation, Global.Diversity, color = pretty_condition_space)) +
   geom_smooth() + 
@@ -204,7 +204,7 @@ dev.off()
 
 # Best score so far
 
-tiff("best_fitness_so_far_over_time.tiff", units="in", width=standard_width, height=standard_height, res=standard_res)
+tiff("best_fitness_so_far_over_time.tiff", units="in", width=standard_width, height=standard_height*0.7, res=standard_res)
 data_timeseries_combined %>% 
   ggplot(aes(Generation, Best.Score.So.Far, color = pretty_condition_space)) +
   geom_smooth() + 
@@ -214,7 +214,7 @@ dev.off()
 
 # Number of migrants over time
 
-tiff("migrants_over_time.tiff", units="in", width=standard_width, height=standard_height, res=standard_res)
+tiff("migrants_over_time.tiff", units="in", width=standard_width*1, height=standard_height*0.55, res=standard_res)
 data_timeseries_combined %>% 
   filter(condition == "Increasing_both") %>% 
   ggplot(aes(Generation, Migrants)) +
@@ -225,7 +225,7 @@ dev.off()
 
 # Epoch sizes over time
 
-tiff("epoch_size_over_time.tiff", units="in", width=standard_width, height=standard_height, res=standard_res)
+tiff("epoch_size_over_time.tiff", units="in", width=standard_width*1, height=standard_height*0.55, res=standard_res)
 data_timeseries_combined %>% 
   filter(condition == "Increasing_both") %>% 
   ggplot(aes(Generation, Epoch.Size)) +
@@ -241,7 +241,7 @@ dev.off()
 
 # Box plot of results
 
-tiff("final_fitness_per_condition.tiff", units="in", width=standard_width*1.2, height=standard_height*1.2, res=standard_res)
+tiff("final_fitness_per_condition.tiff", units="in", width=standard_width*1.2, height=standard_height*0.7, res=standard_res)
 data_results_combined %>% 
   ggplot(aes(pretty_condition_newline, Final.Score, color = migration_direction)) +
   geom_boxplot()  + 
@@ -273,9 +273,9 @@ lm(Final.Score~condition, data=data_results_combined) %>%
 
 # Average global fitness over time
 
-tiff("global_average_fitness_over_time.tiff", units="in", width=standard_width, height=standard_height, res=standard_res)
+tiff("global_average_fitness_over_time.tiff", units="in", width=standard_width, height=standard_height*0.7, res=standard_res)
 data_timeseries_combined %>% 
-  ggplot(aes(Generation, Avg.Global.Fitness, color=condition)) +
+  ggplot(aes(Generation, Avg.Global.Fitness, color=pretty_condition_space)) +
   geom_smooth() + 
   labs(y = "Global average fitness", title="The average fitness of all individuals over time") + 
   theme_bw()
@@ -316,7 +316,7 @@ data_timeseries_best_island_combined %>%
   theme_bw()
 dev.off()
 
-tiff("final_average_fitness_per_ranked_island.tiff", units="in", width=standard_width, height=standard_height, res=standard_res)
+tiff("final_average_fitness_per_ranked_island.tiff", units="in", width=standard_width, height=standard_height*0.7, res=standard_res)
 data_timeseries_best_island_combined %>% 
   filter(is_last_measurement == 1) %>% 
   arrange(condition, Run, desc(AvgIslandFitness)) %>% 
@@ -330,7 +330,7 @@ data_timeseries_best_island_combined %>%
   theme_bw()
 dev.off()
 
-tiff("max_average_fitness_per_ranked_island.tiff", units="in", width=standard_width, height=standard_height, res=standard_res)
+tiff("max_average_fitness_per_ranked_island.tiff", units="in", width=standard_width, height=standard_height*0.7, res=standard_res)
 data_timeseries_best_island_combined %>% 
   filter(is_max_avg_fitness == 1) %>% 
   arrange(condition, Run, desc(AvgIslandFitness)) %>% 
