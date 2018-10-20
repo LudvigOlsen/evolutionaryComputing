@@ -1,6 +1,6 @@
 package charles.settings;
 
-import charles.Initializer;
+import charles.initializers.Initializer;
 import charles.mutators.Mutator;
 import charles.parentSelectors.ParentSelector;
 import charles.recombinators.Recombinator;

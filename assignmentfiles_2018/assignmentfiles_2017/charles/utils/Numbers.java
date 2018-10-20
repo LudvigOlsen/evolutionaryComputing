@@ -84,6 +84,10 @@ public class Numbers {
 
         return numZeroDecimals;
     }
+
+    public static int roundToInt(double val) {
+        return (int) Math.round(val);
+    }
 }
 
 

@@ -1,6 +1,7 @@
 package charles;
 
 import charles.utils.Numbers;
+import charles.utils.ScaleToRange;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ public class Individual implements Comparable<Individual> {
     private static int individualsCreatedCounter;
 
     private ArrayList<double[]> genome;
+    private double[] rescaledRepresentation; // the first array of genome in range [1e-6, 1.0]
     private List<Double> minLimits;
     private List<Double> maxLimits;
     private double fitnessScore = 0.0;
@@ -52,6 +54,7 @@ public class Individual implements Comparable<Individual> {
 
     public void setGenome(ArrayList<double[]> genome) {
         this.genome = applyLimitsToGenome(genome);
+        updateRescaledRepresentation();
     }
 
     /*
@@ -98,6 +101,18 @@ public class Individual implements Comparable<Individual> {
         return getGenome().size();
     }
 
+    private void updateRescaledRepresentation() {
+
+        double[] rescaledRepresentation = new double[genome.get(0).length];
+
+        for (int gt = 0; gt < genome.get(0).length; gt++) {
+            // Rescaling
+            rescaledRepresentation[gt] = ScaleToRange.scaleToRange(getRepresentation()[gt],
+                    getMinLimits().get(0), getMaxLimits().get(0), 1e-6, 1.0);
+        }
+
+        this.rescaledRepresentation = rescaledRepresentation;
+    }
 
     public void printRepresentation() {
         printGenomeArray(0);
@@ -161,5 +176,9 @@ public class Individual implements Comparable<Individual> {
 
     public void setMaxLimits(List<Double> maxLimits) {
         this.maxLimits = maxLimits;
+    }
+
+    public double[] getRescaledRepresentation() {
+        return rescaledRepresentation;
     }
 }

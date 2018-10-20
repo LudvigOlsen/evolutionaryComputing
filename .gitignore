@@ -166,3 +166,6 @@ pom.xml.tag
 #ignore .info files
 .info
 tmp/
+\.Rhistory
+
+population_divergence_metric/\.RData
